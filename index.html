@@ -165,16 +165,16 @@
     .player.bc .player-name { color: var(--green); }
     .player-score {
       font-family: 'Playfair Display', Georgia, serif;
-      font-size: clamp(54px, 12vw, 88px);
+      font-size: clamp(48px, 10vw, 72px);
       font-weight: 900;
-      line-height: .85;
+      line-height: 1;
+      margin: 8px 0 10px;
       transition: transform .3s cubic-bezier(.34,1.56,.64,1);
     }
     .player-score.bump { transform: scale(1.15); }
     .player-detail {
-      font-size: 12px;
+      font-size: 13px;
       color: var(--muted);
-      margin-top: 6px;
       line-height: 1.4;
     }
     .vs-divider {
@@ -486,7 +486,7 @@
       <div class="player luke">
         <div class="player-name">Luke</div>
         <div id="score-luke" class="player-score">0</div>
-        <div class="player-detail"><span id="correct-luke">0</span> won &middot; <span id="remaining-luke">24</span> to go</div>
+        <div class="player-detail"><span id="remaining-luke">24</span> categories left</div>
       </div>
       <div class="vs-divider">
         <div class="vs-line"></div>
@@ -496,7 +496,7 @@
       <div class="player bc">
         <div class="player-name">Baby Cakes</div>
         <div id="score-bc" class="player-score">0</div>
-        <div class="player-detail"><span id="correct-bc">0</span> won &middot; <span id="remaining-bc">24</span> to go</div>
+        <div class="player-detail"><span id="remaining-bc">24</span> categories left</div>
       </div>
     </section>
 
@@ -952,8 +952,6 @@
       }
       prevScores = { luke: sLuke, bc: sBC };
 
-      document.getElementById('correct-luke').textContent = sLuke;
-      document.getElementById('correct-bc').textContent = sBC;
       document.getElementById('remaining-luke').textContent = categories.length - a;
       document.getElementById('remaining-bc').textContent = categories.length - a;
       document.getElementById('pct-luke').textContent = pLuke + '%';
