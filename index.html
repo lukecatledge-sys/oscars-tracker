@@ -596,8 +596,8 @@
     /* ═══════════════════════════════════════════════
        STATE
     ═══════════════════════════════════════════════ */
-    const STORE_LIVE = 'oscar26-live-v3';
-    const STORE_MANUAL = 'oscar26-manual-v3';
+    const STORE_LIVE = 'oscar26-live-v5';
+    const STORE_MANUAL = 'oscar26-manual-v5';
     let liveWinners = loadJSON(STORE_LIVE, {});
     let manualOverrides = loadJSON(STORE_MANUAL, {});
     let syncStatus = { state: 'off', source: '', time: null, error: '' };
@@ -666,67 +666,98 @@
     }
 
     function parseWikiHTML(html) {
-      const doc = new DOMParser().parseFromString(html, 'text/html');
       const winners = {};
 
-      // Wikipedia marks winners in award tables with a special background color
-      // or by bolding the winner's name. We look for highlighted/styled table rows.
-      // Key insight: only match if there's clear "winner" styling, not just any nominee.
+      // Wikipedia structure: each category has a gold (#F9EFAA) div header.
+      // The FIRST <a> link after each gold div (before the next gold div) is the winner.
+      // We match that first link's title attribute against our nominees.
 
-      // Strategy 1: Look for table cells with background highlighting (gold/yellow)
-      const styledCells = doc.querySelectorAll('td[style*="background"], td[style*="Background"], tr[style*="background"] td');
-      for (const cell of styledCells) {
-        const style = (cell.getAttribute('style') || cell.parentElement.getAttribute('style') || '').toLowerCase();
-        // Wikipedia uses gold/yellow backgrounds for winners
-        if (!style.includes('#ff') && !style.includes('gold') && !style.includes('yellow') && !style.includes('#fa') && !style.includes('#e8')) continue;
-        const text = cell.textContent.trim();
-        if (!text || text.length < 2) continue;
-        for (const cat of categories) {
-          if (winners[cat.id]) continue;
-          const match = bestMatch(text, cat.nominees);
-          if (match) winners[cat.id] = match;
-        }
+      const goldDivRegex = /<div[^>]*style="[^"]*F9EFAA[^"]*"[^>]*>(.*?)<\/div>/gs;
+      const linkTitleRegex = /<a[^>]*title="([^"]+)"[^>]*>/g;
+
+      // Collect all gold div positions and their category names
+      const goldSections = [];
+      let m;
+      while ((m = goldDivRegex.exec(html)) !== null) {
+        const catText = m[1].replace(/<[^>]+>/g, '').trim();
+        if (catText.length < 4 || catText.length > 80) continue;
+        goldSections.push({ name: catText, end: m.index + m[0].length });
       }
 
-      // Strategy 2: Look for list items where the first entry is bold (wiki convention for winners)
-      // Only in sections that match our category headings
-      const headings = doc.querySelectorAll('h2, h3, h4');
-      for (const heading of headings) {
-        const hText = norm(heading.textContent);
-        let matchedCat = null;
-        for (const cat of categories) {
-          if (winners[cat.id]) continue;
-          for (const h of cat.headings) {
-            if (hText.includes(norm(h))) { matchedCat = cat; break; }
-          }
-          if (matchedCat) break;
-        }
-        if (!matchedCat) continue;
+      // Map wiki category names to our category objects
+      const wikiToOurs = {
+        'best picture': 'best-picture',
+        'best directing': 'best-director',
+        'best actor in a leading role': 'best-actor',
+        'best actress in a leading role': 'best-actress',
+        'best actor in a supporting role': 'best-supporting-actor',
+        'best actress in a supporting role': 'best-supporting-actress',
+        'best writing (original screenplay)': 'best-original-screenplay',
+        'best writing (adapted screenplay)': 'best-adapted-screenplay',
+        'best animated feature film': 'best-animated-feature',
+        'best international feature film': 'best-international-feature',
+        'best documentary feature film': 'best-documentary-feature',
+        'best documentary short film': 'best-documentary-short',
+        'best live action short film': 'best-live-action-short',
+        'best animated short film': 'best-animated-short',
+        'best music (original score)': 'best-original-score',
+        'best music (original song)': 'best-original-song',
+        'best sound': 'best-sound',
+        'best casting': 'best-casting',
+        'best production design': 'best-production-design',
+        'best cinematography': 'best-cinematography',
+        'best makeup and hairstyling': 'best-makeup-and-hairstyling',
+        'best costume design': 'best-costume-design',
+        'best film editing': 'best-editing',
+        'best visual effects': 'best-visual-effects',
+      };
 
-        // Walk sibling elements until next heading, looking for a bold nominee in a list
-        let el = heading.nextElementSibling;
-        let steps = 0;
-        while (el && steps < 15) {
-          if (/^h[234]$/i.test(el.tagName)) break;
-          // Check for bold items in lists or tables
-          const bolds = el.querySelectorAll('b, strong');
-          for (const b of bolds) {
-            const bText = b.textContent.trim();
-            if (bText.length < 3) continue;
-            const match = bestMatch(bText, matchedCat.nominees);
-            if (match) {
-              // Verify this bold element is in a list context (not just article chrome)
-              const parent = b.closest('li, td, dd');
-              if (parent) {
-                winners[matchedCat.id] = match;
-                break;
-              }
-            }
+      const catById = {};
+      for (const c of categories) catById[c.id] = c;
+
+      for (let i = 0; i < goldSections.length; i++) {
+        const section = goldSections[i];
+        const catId = wikiToOurs[section.name.toLowerCase()];
+        if (!catId || !catById[catId]) continue;
+        const cat = catById[catId];
+
+        // Get HTML between this gold div and the next one
+        const nextEnd = i + 1 < goldSections.length ? goldSections[i + 1].end - 200 : section.end + 8000;
+        const between = html.substring(section.end, nextEnd);
+
+        // The first <a title="..."> links are the winner (name + film)
+        const links = [];
+        let lm;
+        const linkRe = /<a[^>]*title="([^"]+)"[^>]*>/g;
+        while ((lm = linkRe.exec(between)) !== null && links.length < 6) {
+          const title = lm[1].replace(/ \(film\)| \(2025 film\)| \(2026 film\)/g, '').trim();
+          if (title.length > 2 && !title.includes('edit section') && !title.includes('Wikipedia')) {
+            links.push(title);
           }
-          if (winners[matchedCat.id]) break;
-          el = el.nextElementSibling;
-          steps++;
         }
+
+        if (links.length === 0) continue;
+
+        // Try matching the first link, then combinations of first links (name - film)
+        const firstLink = links[0];
+        let match = bestMatch(firstLink, cat.nominees);
+        if (!match && links.length > 1) {
+          // Try "Person - Film" combo (for acting/directing categories)
+          match = bestMatch(firstLink + ' - ' + links[1], cat.nominees);
+        }
+        if (!match && links.length > 1) {
+          // Try film title as second link
+          match = bestMatch(links[1], cat.nominees);
+        }
+        if (!match) {
+          // Try "Film - Person" combo
+          for (let j = 0; j < Math.min(3, links.length); j++) {
+            match = bestMatch(links[j], cat.nominees);
+            if (match) break;
+          }
+        }
+
+        if (match) winners[catId] = match;
       }
 
       return winners;
