@@ -486,7 +486,7 @@
       <div class="player luke">
         <div class="player-name">Luke</div>
         <div id="score-luke" class="player-score">0</div>
-        <div class="player-detail"><span id="correct-luke">0</span> correct &middot; <span id="alive-luke">24</span> alive</div>
+        <div class="player-detail"><span id="correct-luke">0</span> won &middot; <span id="remaining-luke">24</span> to go</div>
       </div>
       <div class="vs-divider">
         <div class="vs-line"></div>
@@ -496,7 +496,7 @@
       <div class="player bc">
         <div class="player-name">Baby Cakes</div>
         <div id="score-bc" class="player-score">0</div>
-        <div class="player-detail"><span id="correct-bc">0</span> correct &middot; <span id="alive-bc">24</span> alive</div>
+        <div class="player-detail"><span id="correct-bc">0</span> won &middot; <span id="remaining-bc">24</span> to go</div>
       </div>
     </section>
 
@@ -934,8 +934,8 @@
 
       document.getElementById('correct-luke').textContent = sLuke;
       document.getElementById('correct-bc').textContent = sBC;
-      document.getElementById('alive-luke').textContent = alive('luke');
-      document.getElementById('alive-bc').textContent = alive('gf');
+      document.getElementById('remaining-luke').textContent = categories.length - a;
+      document.getElementById('remaining-bc').textContent = categories.length - a;
       document.getElementById('pct-luke').textContent = pLuke + '%';
       document.getElementById('pct-bc').textContent = pBC + '%';
       document.getElementById('fill-luke').style.width = pLuke + '%';
