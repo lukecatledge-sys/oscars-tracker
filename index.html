@@ -669,45 +669,63 @@
       const doc = new DOMParser().parseFromString(html, 'text/html');
       const winners = {};
 
-      // Wikipedia marks winners with bold or specific styling in award tables
-      // Look for tables or lists with category headings
-      const allText = doc.body.innerText || '';
-      const lines = allText.split('\n').map(l => l.trim()).filter(Boolean);
+      // Wikipedia marks winners in award tables with a special background color
+      // or by bolding the winner's name. We look for highlighted/styled table rows.
+      // Key insight: only match if there's clear "winner" styling, not just any nominee.
 
-      for (const cat of categories) {
-        // Find the heading line
-        let startIdx = -1;
-        for (let i = 0; i < lines.length; i++) {
-          const ln = norm(lines[i]);
-          for (const h of cat.headings) {
-            if (ln === norm(h) || ln.includes(norm(h))) { startIdx = i; break; }
-          }
-          if (startIdx !== -1) break;
-        }
-        if (startIdx === -1) continue;
-
-        // The winner is typically the first entry after the heading (bold in wiki)
-        // Check next ~10 lines for a nominee match
-        for (let j = startIdx + 1; j < Math.min(startIdx + 12, lines.length); j++) {
-          const match = bestMatch(lines[j], cat.nominees);
-          if (match) {
-            winners[cat.id] = match;
-            break;
-          }
+      // Strategy 1: Look for table cells with background highlighting (gold/yellow)
+      const styledCells = doc.querySelectorAll('td[style*="background"], td[style*="Background"], tr[style*="background"] td');
+      for (const cell of styledCells) {
+        const style = (cell.getAttribute('style') || cell.parentElement.getAttribute('style') || '').toLowerCase();
+        // Wikipedia uses gold/yellow backgrounds for winners
+        if (!style.includes('#ff') && !style.includes('gold') && !style.includes('yellow') && !style.includes('#fa') && !style.includes('#e8')) continue;
+        const text = cell.textContent.trim();
+        if (!text || text.length < 2) continue;
+        for (const cat of categories) {
+          if (winners[cat.id]) continue;
+          const match = bestMatch(text, cat.nominees);
+          if (match) winners[cat.id] = match;
         }
       }
 
-      // Also try: Wikipedia often uses <b> or <span style="background:..."> for winners
-      const boldEls = doc.querySelectorAll('b, strong');
-      for (const el of boldEls) {
-        const text = el.textContent.trim();
-        if (!text || text.length < 3) continue;
+      // Strategy 2: Look for list items where the first entry is bold (wiki convention for winners)
+      // Only in sections that match our category headings
+      const headings = doc.querySelectorAll('h2, h3, h4');
+      for (const heading of headings) {
+        const hText = norm(heading.textContent);
+        let matchedCat = null;
         for (const cat of categories) {
-          if (winners[cat.id]) continue; // already found
-          const match = bestMatch(text, cat.nominees);
-          if (match) {
-            winners[cat.id] = match;
+          if (winners[cat.id]) continue;
+          for (const h of cat.headings) {
+            if (hText.includes(norm(h))) { matchedCat = cat; break; }
           }
+          if (matchedCat) break;
+        }
+        if (!matchedCat) continue;
+
+        // Walk sibling elements until next heading, looking for a bold nominee in a list
+        let el = heading.nextElementSibling;
+        let steps = 0;
+        while (el && steps < 15) {
+          if (/^h[234]$/i.test(el.tagName)) break;
+          // Check for bold items in lists or tables
+          const bolds = el.querySelectorAll('b, strong');
+          for (const b of bolds) {
+            const bText = b.textContent.trim();
+            if (bText.length < 3) continue;
+            const match = bestMatch(bText, matchedCat.nominees);
+            if (match) {
+              // Verify this bold element is in a list context (not just article chrome)
+              const parent = b.closest('li, td, dd');
+              if (parent) {
+                winners[matchedCat.id] = match;
+                break;
+              }
+            }
+          }
+          if (winners[matchedCat.id]) break;
+          el = el.nextElementSibling;
+          steps++;
         }
       }
 
@@ -754,19 +772,21 @@
 
         const chunk = lines.slice(start + 1, Math.min(end, start + 20));
 
-        // Look for "WINNER" or "Winner:" markers
+        // Only match lines that explicitly say "winner" — do NOT blindly match first nominee
         for (const line of chunk) {
           if (/winner/i.test(line)) {
-            const cleaned = line.replace(/\|?\s*winner.*/i, '').replace(/["""\u2018\u2019]/g, '').trim();
+            // Extract the name before or after "winner"
+            let cleaned = line
+              .replace(/\*?\s*winner\s*[:—\-]?\s*/i, '')  // "WINNER: Name" -> "Name"
+              .replace(/\s*\|?\s*winner.*/i, '')           // "Name | WINNER" -> "Name"
+              .replace(/["""\u2018\u2019\u201c\u201d]/g, '')
+              .trim();
+            if (!cleaned) {
+              // Try: "Name — Winner" pattern
+              const parts = line.split(/winner/i);
+              cleaned = (parts[0] || '').replace(/[|—\-:""]/g, '').trim();
+            }
             const match = bestMatch(cleaned, cat.nominees);
-            if (match) { winners[cat.id] = match; break; }
-          }
-        }
-
-        // Fallback: first nominee-matching line after heading
-        if (!winners[cat.id]) {
-          for (const line of chunk) {
-            const match = bestMatch(line, cat.nominees);
             if (match) { winners[cat.id] = match; break; }
           }
         }
