@@ -596,8 +596,8 @@
     /* ═══════════════════════════════════════════════
        STATE
     ═══════════════════════════════════════════════ */
-    const STORE_LIVE = 'oscar26-live-v5';
-    const STORE_MANUAL = 'oscar26-manual-v5';
+    const STORE_LIVE = 'oscar26-live-v6';
+    const STORE_MANUAL = 'oscar26-manual-v6';
     let liveWinners = loadJSON(STORE_LIVE, {});
     let manualOverrides = loadJSON(STORE_MANUAL, {});
     let syncStatus = { state: 'off', source: '', time: null, error: '' };
@@ -668,14 +668,15 @@
     function parseWikiHTML(html) {
       const winners = {};
 
-      // Wikipedia structure: each category has a gold (#F9EFAA) div header.
-      // The FIRST <a> link after each gold div (before the next gold div) is the winner.
-      // We match that first link's title attribute against our nominees.
+      // Wikipedia structure for Academy Awards:
+      // - Each category has a gold (#F9EFAA) div header
+      // - ALL nominees are listed under every category
+      // - ONLY confirmed winners are marked with ‡ (double dagger)
+      // - Wikipedia explicitly states: "Winners indicated with a double dagger (‡)"
+      // - We MUST check for ‡ to avoid counting unannounced categories
 
       const goldDivRegex = /<div[^>]*style="[^"]*F9EFAA[^"]*"[^>]*>(.*?)<\/div>/gs;
-      const linkTitleRegex = /<a[^>]*title="([^"]+)"[^>]*>/g;
 
-      // Collect all gold div positions and their category names
       const goldSections = [];
       let m;
       while ((m = goldDivRegex.exec(html)) !== null) {
@@ -684,7 +685,6 @@
         goldSections.push({ name: catText, end: m.index + m[0].length });
       }
 
-      // Map wiki category names to our category objects
       const wikiToOurs = {
         'best picture': 'best-picture',
         'best directing': 'best-director',
@@ -725,33 +725,35 @@
         const nextEnd = i + 1 < goldSections.length ? goldSections[i + 1].end - 200 : section.end + 8000;
         const between = html.substring(section.end, nextEnd);
 
-        // The first <a title="..."> links are the winner (name + film)
+        // CRITICAL: Only count this category if the section contains ‡
+        // This is Wikipedia's definitive marker for an announced winner
+        if (!between.includes('\u2021') && !between.includes('&#8225;') && !between.includes('&Dagger;')) {
+          continue; // No winner announced yet for this category
+        }
+
+        // Winner is the first nominee listed (before the ‡ marker)
         const links = [];
-        let lm;
         const linkRe = /<a[^>]*title="([^"]+)"[^>]*>/g;
+        let lm;
         while ((lm = linkRe.exec(between)) !== null && links.length < 6) {
           const title = lm[1].replace(/ \(film\)| \(2025 film\)| \(2026 film\)/g, '').trim();
-          if (title.length > 2 && !title.includes('edit section') && !title.includes('Wikipedia')) {
+          if (title.length > 2 && !title.includes('edit section') && !title.includes('Wikipedia') && !title.includes('cite_')) {
             links.push(title);
           }
         }
 
         if (links.length === 0) continue;
 
-        // Try matching the first link, then combinations of first links (name - film)
-        const firstLink = links[0];
-        let match = bestMatch(firstLink, cat.nominees);
+        // Try matching first link, then combinations
+        let match = bestMatch(links[0], cat.nominees);
         if (!match && links.length > 1) {
-          // Try "Person - Film" combo (for acting/directing categories)
-          match = bestMatch(firstLink + ' - ' + links[1], cat.nominees);
+          match = bestMatch(links[0] + ' - ' + links[1], cat.nominees);
         }
         if (!match && links.length > 1) {
-          // Try film title as second link
           match = bestMatch(links[1], cat.nominees);
         }
         if (!match) {
-          // Try "Film - Person" combo
-          for (let j = 0; j < Math.min(3, links.length); j++) {
+          for (let j = 0; j < Math.min(4, links.length); j++) {
             match = bestMatch(links[j], cat.nominees);
             if (match) break;
           }
