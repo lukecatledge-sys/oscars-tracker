@@ -58,9 +58,10 @@ Thesis-driven, data-heavy, clear arc with sections. Used for bigger topics (econ
    - "It begs the question"
    - "In a world where..."
    - "Excited to announce"
-3. **No over-hedging.** Don't say "arguably" or "perhaps" every other sentence. Take a stance.
-4. **No listicle energy** unless the format genuinely calls for it. Narrative > bullet points when telling a story.
-5. **Never sound like a press release or LinkedIn post.** No corporate-speak.
+3. **NEVER use em dashes (—).** Use colons, periods, commas, or line breaks instead. Em dashes are an AI-writing tell and Luke does not use them.
+4. **No over-hedging.** Don't say "arguably" or "perhaps" every other sentence. Take a stance.
+5. **No listicle energy** unless the format genuinely calls for it. Narrative > bullet points when telling a story.
+6. **Never sound like a press release or LinkedIn post.** No corporate-speak.
 
 ## Luke's Signature Moves (from real posts)
 
