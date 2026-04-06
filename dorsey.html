@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>From Hierarchy to Intelligence — Dorsey Mental Model</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0808;
+      --panel: rgba(24, 18, 18, .92);
+      --panel-2: rgba(36, 26, 26, .95);
+      --line: rgba(222, 187, 116, .15);
+      --line-bright: rgba(222, 187, 116, .35);
+      --gold: #deb974;
+      --gold-2: #f3dfb5;
+      --gold-glow: rgba(222, 185, 116, .25);
+      --purple: #cc9bff;
+      --purple-dim: rgba(204, 155, 255, .15);
+      --green: #97efba;
+      --green-dim: rgba(151, 239, 186, .15);
+      --red: #ff8e8e;
+      --text: #f8f0e6;
+      --muted: #b8a694;
+      --shadow: 0 20px 60px rgba(0,0,0,.5);
+      --radius: 16px;
+      --panel-w: 440px;
+    }
+    * { box-sizing: border-box; margin: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 20% 10%, rgba(204,155,255,.06), transparent),
+        radial-gradient(ellipse 60% 50% at 80% 10%, rgba(151,239,186,.06), transparent),
+        radial-gradient(ellipse 80% 40% at 50% 100%, rgba(222,185,116,.04), transparent);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 24px;
+      background: rgba(10,8,8,.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+    .header__left { display: flex; flex-direction: column; gap: 2px; }
+    .header__title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 18px; font-weight: 900;
+      color: var(--gold);
+    }
+    .header__subtitle {
+      font-size: 11px; color: var(--muted);
+      letter-spacing: .04em;
+    }
+    .header__right { display: flex; gap: 8px; align-items: center; }
+    .view-toggle {
+      border: none; border-radius: 10px;
+      padding: 8px 14px; font-size: 12px; font-weight: 700;
+      cursor: pointer; transition: all .15s;
+      background: rgba(255,255,255,.06); color: var(--text);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .view-toggle:hover { background: rgba(255,255,255,.1); transform: translateY(-1px); }
+    .view-toggle.active { background: var(--gold); color: #1a1008; border-color: var(--gold); }
+
+    /* ── MIND MAP CONTAINER ── */
+    .app { position: relative; z-index: 1; }
+    .mind-map {
+      position: relative;
+      width: 100vw; height: 100vh;
+      padding-top: 56px;
+      overflow: hidden;
+    }
+    .connections-layer {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ── NODES ── */
+    .node {
+      position: absolute;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all .35s cubic-bezier(.34, 1.56, .64, 1);
+      z-index: 2;
+      opacity: 0; transform: scale(0.4);
+      user-select: none;
+    }
+    .node.visible { opacity: 1; transform: scale(1); }
+    .node:hover { transform: scale(1.1); z-index: 5; }
+    .node.visible:hover { transform: scale(1.1); }
+    .node__icon { font-size: 24px; line-height: 1; margin-bottom: 4px; }
+    .node__title {
+      font-size: 11px; font-weight: 800;
+      letter-spacing: .03em; line-height: 1.2;
+      max-width: 90%; padding: 0 4px;
+    }
+
+    /* Ring color variants */
+    .node--core {
+      width: 140px; height: 140px;
+      background: radial-gradient(circle, rgba(222,185,116,.18), rgba(222,185,116,.06));
+      border: 2px solid rgba(222,185,116,.4);
+      box-shadow: 0 0 40px rgba(222,185,116,.15);
+    }
+    .node--core .node__title { font-size: 13px; color: var(--gold-2); }
+    .node--core .node__icon { font-size: 32px; }
+
+    .node--inner {
+      width: 110px; height: 110px;
+      background: radial-gradient(circle, rgba(204,155,255,.14), rgba(204,155,255,.04));
+      border: 1.5px solid rgba(204,155,255,.3);
+      box-shadow: 0 0 24px rgba(204,155,255,.1);
+    }
+    .node--inner .node__title { color: var(--purple); }
+
+    .node--middle {
+      width: 105px; height: 105px;
+      background: radial-gradient(circle, rgba(151,239,186,.12), rgba(151,239,186,.04));
+      border: 1.5px solid rgba(151,239,186,.3);
+      box-shadow: 0 0 24px rgba(151,239,186,.1);
+    }
+    .node--middle .node__title { color: var(--green); }
+
+    .node--outer {
+      width: 100px; height: 100px;
+      background: radial-gradient(circle, rgba(222,185,116,.10), rgba(222,185,116,.03));
+      border: 1.5px solid rgba(222,185,116,.25);
+      box-shadow: 0 0 20px rgba(222,185,116,.08);
+    }
+    .node--outer .node__title { color: var(--gold); font-size: 10px; }
+    .node--outer .node__icon { font-size: 20px; }
+
+    /* Node states */
+    .node.selected {
+      border-color: var(--gold) !important;
+      box-shadow: 0 0 0 3px rgba(222,185,116,.3), 0 0 40px rgba(222,185,116,.2) !important;
+      animation: node-pulse 2s ease-in-out infinite;
+    }
+    .node.related {
+      border-color: rgba(222,185,116,.5) !important;
+      box-shadow: 0 0 20px rgba(222,185,116,.15) !important;
+    }
+    @keyframes node-pulse {
+      0%, 100% { box-shadow: 0 0 0 3px rgba(222,185,116,.3), 0 0 40px rgba(222,185,116,.2); }
+      50% { box-shadow: 0 0 0 8px rgba(222,185,116,.0), 0 0 50px rgba(222,185,116,.3); }
+    }
+
+    /* ── SVG CONNECTIONS ── */
+    .connection {
+      fill: none;
+      stroke: rgba(222,185,116,.1);
+      stroke-width: 1;
+      transition: all .4s;
+    }
+    .connection.active {
+      stroke: rgba(222,185,116,.35);
+      stroke-width: 1.5;
+      stroke-dasharray: 8 5;
+      animation: dash-flow 1s linear infinite;
+    }
+    @keyframes dash-flow { to { stroke-dashoffset: -13; } }
+
+    /* ── DETAIL PANEL ── */
+    .overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.5);
+      z-index: 90; opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s;
+    }
+    .overlay.open { opacity: 1; pointer-events: auto; }
+
+    .detail-panel {
+      position: fixed; top: 0; right: 0; bottom: 0;
+      width: var(--panel-w);
+      background: var(--panel);
+      border-left: 1px solid var(--line);
+      z-index: 100;
+      transform: translateX(100%);
+      transition: transform .4s cubic-bezier(.16, 1, .3, 1);
+      display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+    .detail-panel.open { transform: translateX(0); }
+    .detail-panel__header {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--line);
+      display: flex; align-items: flex-start; gap: 16px;
+      flex-shrink: 0;
+    }
+    .detail-panel__close {
+      border: none; background: rgba(255,255,255,.06);
+      color: var(--muted); width: 32px; height: 32px;
+      border-radius: 8px; cursor: pointer; font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .15s; flex-shrink: 0;
+    }
+    .detail-panel__close:hover { background: rgba(255,255,255,.12); color: var(--text); }
+    .detail-panel__title-wrap { flex: 1; }
+    .detail-panel__icon { font-size: 28px; margin-bottom: 4px; }
+    .detail-panel__title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 22px; font-weight: 900; line-height: 1.2;
+    }
+    .detail-panel__ring {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .12em; margin-top: 4px;
+    }
+    .detail-panel__content {
+      padding: 20px 24px 32px;
+      overflow-y: auto; flex: 1;
+      line-height: 1.7; font-size: 14px;
+    }
+    .detail-panel__content h3 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 16px; font-weight: 700;
+      margin: 20px 0 8px; color: var(--gold);
+    }
+    .detail-panel__content h3:first-child { margin-top: 0; }
+    .detail-panel__content p { margin-bottom: 12px; color: rgba(248,240,230,.85); }
+    .detail-panel__content ul { padding-left: 18px; margin-bottom: 12px; }
+    .detail-panel__content li { margin-bottom: 6px; color: rgba(248,240,230,.85); }
+    .detail-panel__content .quote {
+      border-left: 3px solid var(--gold);
+      padding: 8px 14px; margin: 12px 0;
+      background: rgba(222,185,116,.05);
+      border-radius: 0 8px 8px 0;
+      font-style: italic; color: var(--gold-2);
+      font-size: 13px; line-height: 1.6;
+    }
+    .detail-panel__content .durable-skill {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 12px; border-radius: 999px;
+      background: rgba(222,185,116,.08); border: 1px solid rgba(222,185,116,.2);
+      font-size: 12px; font-weight: 700; color: var(--gold);
+      margin: 4px 4px 4px 0;
+    }
+    .note-area {
+      width: 100%; min-height: 250px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid var(--line);
+      border-radius: 10px; padding: 14px;
+      color: var(--text); font-family: 'Inter', sans-serif;
+      font-size: 13px; line-height: 1.6;
+      resize: vertical; outline: none;
+      transition: border-color .2s;
+    }
+    .note-area:focus { border-color: var(--gold); }
+    .note-area::placeholder { color: var(--muted); }
+    .note-saved {
+      font-size: 11px; color: var(--green);
+      margin-top: 6px; opacity: 0;
+      transition: opacity .3s;
+    }
+    .note-saved.show { opacity: 1; }
+
+    /* ── LIST VIEW ── */
+    .app.list-mode .mind-map {
+      height: auto; min-height: 100vh;
+      padding: 72px 16px 40px;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 12px;
+    }
+    .app.list-mode .connections-layer { display: none; }
+    .app.list-mode .node {
+      position: static !important;
+      border-radius: var(--radius) !important;
+      width: 100% !important; max-width: 600px;
+      height: auto !important;
+      padding: 16px 20px;
+      flex-direction: row; justify-content: flex-start;
+      gap: 14px; text-align: left;
+      opacity: 1; transform: none;
+    }
+    .app.list-mode .node__icon { font-size: 28px; margin-bottom: 0; flex-shrink: 0; }
+    .app.list-mode .node__title { font-size: 14px; max-width: none; padding: 0; }
+    .app.list-mode .node .node__subtitle {
+      display: block; font-size: 12px; font-weight: 400;
+      color: var(--muted); margin-top: 2px;
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      .mind-map { display: flex; flex-direction: column; align-items: center; gap: 10px;
+        height: auto; min-height: 100vh; padding: 64px 12px 32px; }
+      .connections-layer { display: none; }
+      .node {
+        position: static !important;
+        border-radius: var(--radius) !important;
+        width: 100% !important; max-width: 500px;
+        height: auto !important;
+        padding: 14px 18px;
+        flex-direction: row; justify-content: flex-start;
+        gap: 12px; text-align: left;
+        opacity: 1; transform: none;
+      }
+      .node__icon { font-size: 24px; margin-bottom: 0; flex-shrink: 0; }
+      .node__title { font-size: 13px; max-width: none; padding: 0; }
+      .node .node__subtitle { display: block; font-size: 11px; font-weight: 400; color: var(--muted); margin-top: 2px; }
+      .detail-panel { width: 100%; }
+      .header__subtitle { display: none; }
+      .header__title { font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app" id="app">
+  <header class="header">
+    <div class="header__left">
+      <div class="header__title">From Hierarchy to Intelligence</div>
+      <div class="header__subtitle">Jack Dorsey &amp; Roelof Botha &middot; March 2026</div>
+    </div>
+    <div class="header__right">
+      <button class="view-toggle" id="viewToggle" onclick="toggleView()">List View</button>
+    </div>
+  </header>
+
+  <div class="mind-map" id="mindMap">
+    <svg class="connections-layer" id="connectionsLayer"></svg>
+  </div>
+
+  <div class="overlay" id="overlay" onclick="closeDetail()"></div>
+
+  <div class="detail-panel" id="detailPanel">
+    <div class="detail-panel__header">
+      <button class="detail-panel__close" onclick="closeDetail()">&times;</button>
+      <div class="detail-panel__title-wrap">
+        <div class="detail-panel__icon" id="detailIcon"></div>
+        <div class="detail-panel__title" id="detailTitle"></div>
+        <div class="detail-panel__ring" id="detailRing"></div>
+      </div>
+    </div>
+    <div class="detail-panel__content" id="detailContent"></div>
+  </div>
+</div>
+
+<script>
+
+/* ══════════════════════════════════════════════════
+   DATA — Nodes, content, connections
+   ══════════════════════════════════════════════════ */
+
+const NODES = [
+  {
+    id: 'core-thesis',
+    title: 'Company as Intelligence',
+    icon: '🧠',
+    ring: 'core',
+    angle: 0,
+    subtitle: 'The Core Thesis',
+    connections: ['world-models', 'ceo-role'],
+    content: `
+      <h3>The Core Thesis</h3>
+      <p>Traditional corporate hierarchy has existed for ~2,000 years to solve one fundamental problem: <strong>routing information</strong> through organizations too large for any single person to oversee.</p>
+      <div class="quote">"We're after something different: a company built as an intelligence (or mini-AGI)."</div>
+      <h3>Historical Origin</h3>
+      <p>The Roman Army's <strong>contubernium</strong> — 8 soldiers who shared a tent, equipment, and a mule, led by a decanus — became the template for hierarchical coordination. This nested structure with consistent span of control persisted for two millennia.</p>
+      <h3>The Shift</h3>
+      <p>AI can now maintain a <strong>continuously updated model of an entire business</strong> and coordinate work in ways that previously required humans relaying information through layers of management.</p>
+      <div class="quote">"I don't think this is a productivity thing. I think it's a structural thing that needs to shift."</div>
+      <h3>Not a Co-Pilot Play</h3>
+      <p>Most companies treat AI as augmentation — a "co-pilot" bolted onto existing structures. The real opportunity is <strong>rebuilding the company with intelligence as the core</strong>. This is structural transformation, not productivity enhancement.</p>
+      <h3>Block's Action</h3>
+      <p>Block cut ~4,000 of 10,000+ employees — framed as <strong>permanent restructuring</strong>, not cost-cutting. Triggered by a capability shift in AI tools observed in December 2025.</p>
+      <p>The exercise that sparked it: <em>"Would you build the company this way if you had these tools today?"</em> — Everyone around the table said no.</p>
+      <div class="quote">"Every year it's a 10% riff or 20% riff — that is the most demoralizing, noncreative building of a company ever. I don't want to be at a company like that."</div>
+    `
+  },
+  {
+    id: 'capabilities',
+    title: 'Capabilities',
+    icon: '⚙️',
+    ring: 'inner',
+    angle: 0,
+    subtitle: 'Layer 1: Core Tools & Services',
+    connections: ['proactive-intel'],
+    content: `
+      <h3>The Foundation Layer</h3>
+      <p>Capabilities are the <strong>core tools and services</strong> the company offers — the fundamental building blocks that everything else composes from.</p>
+      <h3>Block's Capabilities</h3>
+      <ul>
+        <li>Card issuance</li>
+        <li>Card acceptance</li>
+        <li>Peer-to-peer payments</li>
+        <li>Lending</li>
+        <li>Cash flow management</li>
+      </ul>
+      <h3>The Division of Labor</h3>
+      <p>In the intelligence architecture, each component has a clear role:</p>
+      <ul>
+        <li><strong>Intelligence layer</strong> handles coordination</li>
+        <li><strong>World model</strong> handles context</li>
+        <li><strong>Capabilities</strong> handle execution</li>
+      </ul>
+      <p>Think of capabilities as <strong>primitives</strong> that can be assembled in novel combinations — not fixed products, but composable building blocks.</p>
+      <div class="quote">"We build up capabilities which are effectively our tools — we can issue cards, card acceptance, peer-to-peer, lending — all these things we do as a financial technology company."</div>
+    `
+  },
+  {
+    id: 'interfaces',
+    title: 'Interfaces',
+    icon: '📱',
+    ring: 'inner',
+    angle: 90,
+    subtitle: 'Layer 2: Delivery Surfaces',
+    connections: ['key-principles'],
+    content: `
+      <h3>Delivery Surfaces</h3>
+      <p>Interfaces are the <strong>products that touch humans and the real world</strong> — the delivery surfaces through which capabilities reach customers.</p>
+      <h3>Block's Interfaces</h3>
+      <ul>
+        <li><strong>Square</strong> — register + dashboard for merchants</li>
+        <li><strong>Cash App</strong> — consumer financial tool</li>
+        <li><strong>Afterpay</strong> — buy now, pay later</li>
+        <li><strong>Tidal</strong> — music streaming</li>
+        <li><strong>Bitkey</strong> — bitcoin wallet</li>
+        <li><strong>Proto</strong> — hardware</li>
+      </ul>
+      <h3>Today vs. Tomorrow</h3>
+      <p><strong>Today:</strong> Interfaces are built with specific navigations that represent the company's roadmap and understanding of customer needs — a fixed, pre-built experience.</p>
+      <p><strong>Future:</strong> The interface becomes conversational. Customers can ask for features that <em>don't exist on the roadmap</em>, and the system composes them in real time from capabilities.</p>
+      <div class="quote">"Our customers are going to have the expectation that they can ask for a feature that doesn't exist on our roadmap and that it just is served to them."</div>
+    `
+  },
+  {
+    id: 'proactive-intel',
+    title: 'Proactive Intelligence',
+    icon: '⚡',
+    ring: 'inner',
+    angle: 180,
+    subtitle: 'Layer 3: Anticipatory Service',
+    connections: ['capabilities'],
+    content: `
+      <h3>From Reactive to Anticipatory</h3>
+      <p>The system <strong>prompts customers</strong> based on deep understanding of signals — instead of waiting for customer input or hoping they ask the right question.</p>
+      <h3>The Honest Signal</h3>
+      <div class="quote">"Money is the most honest signal in the world. You can lie about literally everything, but when a transaction occurs, that really tells the truth about your life or your business's life."</div>
+      <h3>Examples</h3>
+      <p><strong>Cash flow protection:</strong> Sequencing bill payments — rent, Spotify, kids' allowance — so the customer never goes to zero, never goes negative, and builds a cushion toward saving and wealth-building.</p>
+      <p><strong>Merchant financing:</strong> Composing a short-term loan from the lending capability, adjusting the repayment schedule using the payments capability, and surfacing it to the merchant <em>before they even think to look for financing</em>.</p>
+      <h3>How It Works</h3>
+      <p>The intelligence layer composes capabilities into solutions for specific customers at specific moments and delivers them proactively. It's not a feature on a roadmap — it's dynamic composition based on the world model's understanding of what the customer needs right now.</p>
+      <div class="quote">"We can do the very simple but very valuable thing of: how do we protect our customers' cash flow?"</div>
+    `
+  },
+  {
+    id: 'world-models',
+    title: 'World Models',
+    icon: '🌐',
+    ring: 'inner',
+    angle: 270,
+    subtitle: 'Layer 4: The Dual Brain',
+    connections: ['core-thesis', 'key-principles'],
+    content: `
+      <h3>Two World Models</h3>
+      <p>The intelligence is powered by <strong>two distinct world models</strong> that together create an unprecedented understanding of the business and its customers.</p>
+      <h3>Company World Model</h3>
+      <p>Tracks all decisions, discussions, plans, problems, and progress from <strong>every artifact</strong> the company produces:</p>
+      <ul>
+        <li>Slack messages and emails</li>
+        <li>Code and pull requests</li>
+        <li>Google docs and design files</li>
+        <li>Recorded meetings</li>
+        <li>Incident reports and operational metrics</li>
+      </ul>
+      <div class="quote">"Every single thing that we do creates some sort of artifact... traditionally, we've been relying upon humans in a management structure to go up and down a chain to relay that information."</div>
+      <p>This replaces the context that managers traditionally carried up and down the chain.</p>
+      <h3>Customer World Model</h3>
+      <p>Built from <strong>transaction data</strong> flowing through both sides of the counter — Cash App (consumer) and Square (merchant) see both sides of millions of payments daily.</p>
+      <div class="quote">"Money is the most honest signal in the world."</div>
+      <h3>What This Enables</h3>
+      <ul>
+        <li>Board members query company intelligence directly instead of quarterly slide decks</li>
+        <li>Analysts get fully RAG'd, FD-compliant information on their own timeline</li>
+        <li>Anyone in the company can "have a conversation with the company about how the company is doing"</li>
+      </ul>
+      <div class="quote">"Imagine if every single board member can just query the company and have a conversation with the company's intelligence in real time."</div>
+    `
+  },
+
+  {
+    id: 'ic-role',
+    title: 'IC',
+    icon: '🔨',
+    ring: 'middle',
+    angle: 30,
+    subtitle: 'Builder / Operator',
+    connections: ['org-evolution'],
+    content: `
+      <h3>Individual Contributor: Builder &amp; Operator</h3>
+      <p>The <strong>largest part of the population</strong> — the people who actually build or operate the company.</p>
+      <ul>
+        <li>Engineers</li>
+        <li>Designers</li>
+        <li>Salespeople</li>
+        <li>Product people</li>
+        <li>Writers</li>
+      </ul>
+      <div class="quote">"Whatever it is, they're actually working with the tools to build or to operate the company."</div>
+      <h3>AI Augmentation</h3>
+      <p>ICs are augmented because they have access to agents — one person can potentially do the work or explore the breadth that would take a team of 10 people in the past.</p>
+      <p>The world model gives them the context they need to make <strong>autonomous decisions</strong> without waiting for managerial approval.</p>
+      <h3>The New Meeting</h3>
+      <p>Every meeting now: "Everyone is bringing a <strong>prototype that they built</strong>" instead of presentations or Google docs. Real or simulated data, modifiable in real time.</p>
+      <div class="quote">"The breadth that we get to explore is suddenly incredible — and that allows us to really focus on judgment: which thread are we pulling on?"</div>
+      <h3>Durable Human Skill</h3>
+      <div class="durable-skill">🎯 Judgment</div>
+      <div class="durable-skill">✨ Taste</div>
+      <div class="durable-skill">💡 Creativity</div>
+    `
+  },
+  {
+    id: 'dri-role',
+    title: 'DRI',
+    icon: '🎯',
+    ring: 'middle',
+    angle: 150,
+    subtitle: 'Directly Responsible Individual',
+    connections: ['org-evolution'],
+    content: `
+      <h3>DRI: Directly Responsible Individual</h3>
+      <p>The person who <strong>owns customer outcomes</strong> — they put a strategy together, understand what roadmap solves customer needs, and assemble a team of ICs to get it done.</p>
+      <h3>How It Works</h3>
+      <ul>
+        <li>Owns outcomes for fixed periods — <strong>90-day cycles</strong></li>
+        <li>Full authority to pull resources across teams</li>
+        <li>Example: A DRI might own "merchant churn reduction" for 90 days</li>
+      </ul>
+      <div class="quote">"They're really owning the outcomes and whether something is failing or not."</div>
+      <h3>Key Distinction</h3>
+      <p>The DRI is not a manager in the traditional sense. They don't have permanent reports. They assemble the right ICs for the mission, own the outcome, and when the cycle is done, the team can reconfigure.</p>
+      <h3>Durable Human Skill</h3>
+      <div class="durable-skill">💪 Ownership</div>
+      <div class="durable-skill">📊 Accountability</div>
+    `
+  },
+  {
+    id: 'player-coach',
+    title: 'Player Coach',
+    icon: '🏋️',
+    ring: 'middle',
+    angle: 270,
+    subtitle: 'Craft Builder',
+    connections: ['org-evolution'],
+    content: `
+      <h3>Player Coach: The New "Manager"</h3>
+      <p>What we call "managers" today — but <strong>fundamentally different</strong>. A Player Coach builds the capability and capacity of other humans in their craft.</p>
+      <h3>Shows, Not Tells</h3>
+      <div class="quote">"Instead of telling them how to do it, they're showing them how to do it by doing the work."</div>
+      <p>They must be ICs themselves who are also excellent at coaching. They do the work alongside the people they're developing.</p>
+      <h3>Assignment, Not Hierarchy</h3>
+      <p>In the future, Player Coach becomes an <strong>assignment, not a reporting structure</strong>.</p>
+      <div class="quote">"I'm assigned to ICs or I'm assigned to DRIs to help them master their craft."</div>
+      <h3>What They Don't Need</h3>
+      <p>Doesn't need to be strategic (that's the DRI's job). Does need to build — they demonstrate the skill through their own work.</p>
+      <h3>Leadership Note</h3>
+      <p>Leadership (CEO, exec team) is expected to hold <strong>all three roles simultaneously</strong> — IC, DRI, and Player Coach. In rare cases, one exceptional person can take on all three.</p>
+      <h3>Durable Human Skill</h3>
+      <div class="durable-skill">🤝 Coaching</div>
+      <div class="durable-skill">❤️ Empathy</div>
+      <div class="durable-skill">🌱 Building Human Capacity</div>
+    `
+  },
+  {
+    id: 'org-evolution',
+    title: 'Org Evolution',
+    icon: '🔄',
+    ring: 'outer',
+    angle: 0,
+    subtitle: 'Pyramid → Flat → Circle',
+    connections: ['ic-role', 'dri-role', 'player-coach'],
+    content: `
+      <h3>Three Modes of Organization</h3>
+      <h3>1. Manager Mode (Pyramid) △</h3>
+      <ul>
+        <li>Traditional hierarchy — VPs make most decisions</li>
+        <li>5+ layers deep, command and control</li>
+        <li>~2,000 year old pattern borrowed from military</li>
+        <li>Political actions, jockeying for position</li>
+        <li>Information loss at every layer</li>
+      </ul>
+      <h3>2. Founder Mode (Flat) ―</h3>
+      <ul>
+        <li>Flat structure, founder makes many decisions directly</li>
+        <li>More transparency, limited hierarchy</li>
+      </ul>
+      <div class="quote">"Founders often long for the days when they were 100 people and not 500 — because they were so much more productive. Why? Because you had lots of transparency, limited hierarchy."</div>
+      <h3>3. "Dorsey Mode" (Circle) ○</h3>
+      <ul>
+        <li>Intelligence system at center, humans at edges doing alignment</li>
+        <li>Target depth: 2-3 layers (ideally zero — everyone reports to CEO via intelligence layer)</li>
+        <li>Block's current max depth: ~5. Goal this year: 2-3.</li>
+        <li>Ideal: all 6,000 people report to CEO (sounds ridiculous under old model, manageable with intelligence layer)</li>
+      </ul>
+      <div class="quote">"The org structure inverts: in a conventional company, intelligence is spread throughout the people and the hierarchy routes it. In this model, the intelligence lives in the system and the people are on the edge."</div>
+      <h3>The Capitalism Analogy</h3>
+      <p>Roelof Botha drew a parallel to Adam Smith's <em>Wealth of Nations</em>:</p>
+      <div class="quote">"If you have the right signals, you can rely on the self-interested behavior of many small participants in the system to actually lead to optimal outcomes."</div>
+    `
+  },
+  {
+    id: 'ceo-role',
+    title: 'CEO Role',
+    icon: '👤',
+    ring: 'outer',
+    angle: 72,
+    subtitle: 'Architect of Intelligence',
+    connections: ['core-thesis'],
+    content: `
+      <h3>CEO Role: Before &amp; After</h3>
+      <h3>The Old Model (Three Duties)</h3>
+      <ol>
+        <li><strong>Right principles, team dynamic, culture</strong> — hiring/firing, setting values, setting the tone</li>
+        <li><strong>Decisions in context</strong> — ensuring decisions are made considering customers, industry trends, and competition</li>
+        <li><strong>Raise the execution bar</strong> — constantly increase capability, push into discomfort for growth</li>
+      </ol>
+      <h3>The New Model</h3>
+      <p>The CEO becomes the <strong>architect of the company intelligence</strong>. Constantly aligning the system to where you think the right outcome is.</p>
+      <div class="quote">"My job as CEO is the extra checkpoint on: is the alignment circle of humans actually working correctly?"</div>
+      <p>Visual: intelligence/world model in the center, humans at the edge constantly aligning it toward customer outcomes. The CEO ensures this alignment loop is functioning.</p>
+      <h3>The Entropy Imperative</h3>
+      <p>Must constantly put enough "entropy" (intent, direction) into the system to keep it relevant going forward.</p>
+      <div class="quote">"I can't imagine doing anything bigger than rebuilding a company as an intelligence."</div>
+      <h3>The Delegation Lesson</h3>
+      <p>Dorsey's biggest regret: <strong>delegating too much</strong> — building a holding company with separate CEOs for Square and Cash App instead of one unified intelligence.</p>
+      <div class="quote">"The value of our company is not these unrelated things growing at different clips. It's how we bring them together."</div>
+    `
+  },
+
+  {
+    id: 'key-principles',
+    title: 'Key Principles',
+    icon: '📐',
+    ring: 'outer',
+    angle: 144,
+    subtitle: 'Operating Philosophy',
+    connections: ['world-models', 'interfaces'],
+    content: `
+      <h3>Operating Principles</h3>
+      <h3>Remove the Roadmap as Limiting Factor</h3>
+      <div class="quote">"A company's ultimate limiting factor is its own roadmap."</div>
+      <p>Customers should drive the roadmap via their queries and usage. When a customer asks for something you can't serve, that gap IS your roadmap.</p>
+      <h3>Customer-Driven Development</h3>
+      <div class="quote">"Our customers, just by using and talking with our systems, are telling us what our roadmap should be — and then it's up to us to give the judgment."</div>
+      <p>No more relying on customer research, interviews, and support feedback loops. Conversational interfaces give you <strong>amazing fidelity</strong> on what customers actually want.</p>
+      <h3>Full Legibility</h3>
+      <div class="quote">"Imagine if your company was entirely legible — every aspect of it. And we're not far off from that from a data perspective."</div>
+      <p>Every artifact feeds the intelligence. People rely on others telling them things — that doesn't always happen for various reasons (agenda, politics, emotions). Full legibility removes these barriers.</p>
+      <h3>Signal > Hierarchy</h3>
+      <p>Like capitalism: right signals enable optimal outcomes without central planning.</p>
+      <div class="quote">"It's not somebody who pounds the table harder who gets their product approved. It's: listen, more customers want this than that. That's how we're going to decide what to build next."</div>
+      <h3>Distribution as Differentiator</h3>
+      <div class="quote">"If you don't have the distribution today, it's going to be very hard to fight for that."</div>
+      <p>Building is easy now. Getting attention is the hard part. There will be new areas of distribution we can't predict.</p>
+      <h3>Explore Broadly, Focus on Details</h3>
+      <p>AI enables wider exploration — prototype in an hour vs. months. But focus on the last 20%.</p>
+      <div class="quote">"These tools will build about 80% of where we need to go — and then that last 20% is going to be a function of how good our creativity is, how good our taste is, how good our judgment is."</div>
+      <h3>Act Decisively</h3>
+      <div class="quote">"If you're going to eat a sh*t sandwich, don't nibble."</div>
+      <p>Act from strength, not reaction. Don't wait until your back is against the wall — you can do it with more integrity and generosity when you're ahead of it.</p>
+    `
+  },
+  {
+    id: 'leadership',
+    title: 'Leadership',
+    icon: '⭐',
+    ring: 'outer',
+    angle: 216,
+    subtitle: 'Timeless & New Qualities',
+    connections: [],
+    content: `
+      <h3>Leadership Qualities</h3>
+      <h3>ALE Framework (Roelof Botha)</h3>
+      <ul>
+        <li><strong>Authenticity</strong> — Are you who people see? Do you behave authentically? No pretension.</li>
+        <li><strong>Logic</strong> — Are you predictable, rational? Or do you fly off the handle?</li>
+        <li><strong>Empathy</strong> — Do you really care about your team? Deep empathy — "the opposite of being a sociopath."</li>
+      </ul>
+      <h3>Reprogram Your Mind</h3>
+      <div class="quote">"I value someone who's able to reprogram their mind and assumptions constantly — question your own requirements, your own assumptions, and your own decisions."</div>
+      <h3>Taste</h3>
+      <p>Not just "I know what looks good together." It's: <strong>Do I have a point of view? An opinionated drive?</strong> Is it relevant and unique?</p>
+      <div class="quote">"Right now you're seeing a lot of companies — they're just copies of copies of copies because it's easy. Instead: what's your point of view?"</div>
+      <h3>AI as Input, Not Output</h3>
+      <div class="quote">"Most people are seeing what these tools do as output rather than better input to create better output ourselves."</div>
+      <h3>Every Encounter Is a Mentor</h3>
+      <div class="quote">"I made a decision: every single person I talk with, every encounter I have, every problem I face — that's my mentor. What is this thing trying to teach me right now?"</div>
+      <p>Biggest regret: when he decided NOT to learn from an encounter.</p>
+      <h3>DGAF Factor</h3>
+      <p>Comfort with losing credibility to pursue conviction. Cash App was hated internally for 2-3 years. Mentioned fewer than 8 times in Block's S-1.</p>
+      <div class="quote">"Every day I allowed it to persist and defended it, I lost credibility. And I knew I could earn it back if we saw success."</div>
+      <h3>Multiple Founding Moments</h3>
+      <div class="quote">"There are so many smart people in your company that have clever ideas that every day inflected the product."</div>
+      <h3>Meditation as Practice</h3>
+      <p>Not woo-woo — a physical practice. Train your mind to focus on one point, then observe without reacting.</p>
+      <div class="quote">"It sharpens your focus, sharpens your power of observation, and diminishes your instinct to immediately react to things."</div>
+      <h3>Speed</h3>
+      <p>Block went from inspiration to execution of the restructuring in <strong>under 3 weeks</strong>.</p>
+      <div class="quote">"The pace of change is so fast. You've got to move fast."</div>
+    `
+  },
+  {
+    id: 'truemed',
+    title: 'Truemed Notes',
+    icon: '📝',
+    ring: 'outer',
+    angle: 288,
+    subtitle: 'Your Application Notes',
+    connections: [],
+    content: `
+      <h3>Apply This at Truemed</h3>
+      <p>Use this space to capture how this framework maps to your role as Head of Solution Engineering at Truemed.</p>
+      <h3>Prompts to Consider</h3>
+      <ul>
+        <li>What are Truemed's core <strong>capabilities</strong>?</li>
+        <li>What <strong>signals and artifacts</strong> could feed an intelligence layer?</li>
+        <li>Which of the 3 roles (IC / DRI / Player Coach) maps to your team?</li>
+        <li>What does <strong>"full legibility"</strong> look like for your org?</li>
+        <li>Where is the hierarchy getting in the way?</li>
+        <li>What would a <strong>customer world model</strong> look like for Truemed?</li>
+        <li>What can you prototype in your first 90 days?</li>
+      </ul>
+      <h3>Your Notes</h3>
+      <textarea class="note-area" id="truemedNotes" placeholder="Start typing your notes here... They'll be saved automatically."></textarea>
+      <div class="note-saved" id="noteSaved">Saved ✓</div>
+    `
+  }
+];
+
+
+/* ══════════════════════════════════════════════════
+   CONNECTIONS — pairs of node IDs to draw lines between
+   ══════════════════════════════════════════════════ */
+const CONNECTIONS = [
+  ['core-thesis', 'world-models'],
+  ['world-models', 'key-principles'],
+  ['proactive-intel', 'capabilities'],
+  ['ic-role', 'org-evolution'],
+  ['dri-role', 'org-evolution'],
+  ['player-coach', 'org-evolution'],
+  ['ceo-role', 'core-thesis'],
+  ['key-principles', 'interfaces'],
+];
+
+const RING_CONFIG = {
+  core:   { radius: 0,    color: 'gold' },
+  inner:  { radius: 0.22, color: 'purple' },
+  middle: { radius: 0.38, color: 'green' },
+  outer:  { radius: 0.52, color: 'gold' },
+};
+
+const RING_LABELS = {
+  core: 'Core Thesis',
+  inner: 'Architecture Layer',
+  middle: 'Role',
+  outer: 'Framework',
+};
+
+const TRUEMED_KEY = 'dorsey-truemed-notes-v1';
+
+/* ══════════════════════════════════════════════════
+   STATE
+   ══════════════════════════════════════════════════ */
+let selectedId = null;
+let isListView = false;
+let nodePositions = {};
+
+/* ══════════════════════════════════════════════════
+   LAYOUT — compute positions for each node
+   ══════════════════════════════════════════════════ */
+function getNodesByRing(ring) {
+  return NODES.filter(n => n.ring === ring);
+}
+
+function calculatePositions() {
+  const map = document.getElementById('mindMap');
+  const w = map.clientWidth;
+  const h = map.clientHeight;
+  const cx = w / 2;
+  const cy = h / 2;
+  const base = Math.min(w, h) / 2;
+
+  nodePositions = {};
+
+  for (const node of NODES) {
+    const cfg = RING_CONFIG[node.ring];
+    const r = cfg.radius * base;
+    const siblings = getNodesByRing(node.ring);
+    const idx = siblings.indexOf(node);
+    const angleStep = 360 / siblings.length;
+    const offsetMap = { core: 0, inner: -45, middle: 0, outer: 36 };
+    const angleDeg = idx * angleStep + (offsetMap[node.ring] || 0);
+    const angleRad = (angleDeg - 90) * Math.PI / 180;
+
+    nodePositions[node.id] = {
+      x: cx + r * Math.cos(angleRad),
+      y: cy + r * Math.sin(angleRad),
+    };
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   RENDER — create DOM nodes
+   ══════════════════════════════════════════════════ */
+function renderNodes() {
+  const map = document.getElementById('mindMap');
+  // remove old nodes
+  map.querySelectorAll('.node').forEach(el => el.remove());
+
+  for (let i = 0; i < NODES.length; i++) {
+    const node = NODES[i];
+    const el = document.createElement('div');
+    el.className = `node node--${node.ring}`;
+    el.id = `node-${node.id}`;
+    el.dataset.id = node.id;
+    el.style.setProperty('--node-index', i);
+    el.innerHTML = `
+      <span class="node__icon">${node.icon}</span>
+      <span class="node__title">${node.title}</span>
+      <span class="node__subtitle" style="display:none">${node.subtitle}</span>
+    `;
+    el.addEventListener('click', () => selectNode(node.id));
+    map.appendChild(el);
+  }
+}
+
+function positionNodes() {
+  if (isListView || window.innerWidth <= 768) return;
+  calculatePositions();
+  for (const node of NODES) {
+    const el = document.getElementById(`node-${node.id}`);
+    if (!el) continue;
+    const pos = nodePositions[node.id];
+    const size = el.offsetWidth;
+    el.style.left = (pos.x - size / 2) + 'px';
+    el.style.top = (pos.y - size / 2) + 'px';
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   SVG CONNECTIONS
+   ══════════════════════════════════════════════════ */
+function renderConnections() {
+  const svg = document.getElementById('connectionsLayer');
+  svg.innerHTML = '';
+  if (isListView || window.innerWidth <= 768) return;
+
+  for (const [idA, idB] of CONNECTIONS) {
+    const a = nodePositions[idA];
+    const b = nodePositions[idB];
+    if (!a || !b) continue;
+
+    const mx = (a.x + b.x) / 2;
+    const my = (a.y + b.y) / 2;
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    const len = Math.sqrt(dx * dx + dy * dy);
+    // perpendicular offset for curve
+    const off = len * 0.12;
+    const nx = -dy / len * off;
+    const ny = dx / len * off;
+
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', `M${a.x},${a.y} Q${mx + nx},${my + ny} ${b.x},${b.y}`);
+    path.classList.add('connection');
+    path.dataset.from = idA;
+    path.dataset.to = idB;
+    svg.appendChild(path);
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   INTERACTION — select, detail panel
+   ══════════════════════════════════════════════════ */
+function selectNode(id) {
+  if (selectedId === id) { closeDetail(); return; }
+  selectedId = id;
+  const node = NODES.find(n => n.id === id);
+  if (!node) return;
+
+  // Update node states
+  document.querySelectorAll('.node').forEach(el => {
+    el.classList.remove('selected', 'related');
+  });
+  const sel = document.getElementById(`node-${id}`);
+  if (sel) sel.classList.add('selected');
+
+  // Highlight related nodes
+  const relatedIds = new Set();
+  for (const [a, b] of CONNECTIONS) {
+    if (a === id) relatedIds.add(b);
+    if (b === id) relatedIds.add(a);
+  }
+  if (node.connections) node.connections.forEach(c => relatedIds.add(c));
+  relatedIds.forEach(rid => {
+    const rel = document.getElementById(`node-${rid}`);
+    if (rel) rel.classList.add('related');
+  });
+
+  // Highlight connection paths
+  document.querySelectorAll('.connection').forEach(p => {
+    const from = p.dataset.from;
+    const to = p.dataset.to;
+    if (from === id || to === id) {
+      p.classList.add('active');
+    } else {
+      p.classList.remove('active');
+    }
+  });
+
+  // Open detail panel
+  const ringColors = { core: 'var(--gold)', inner: 'var(--purple)', middle: 'var(--green)', outer: 'var(--gold)' };
+  document.getElementById('detailIcon').textContent = node.icon;
+  document.getElementById('detailTitle').textContent = node.title;
+  document.getElementById('detailTitle').style.color = ringColors[node.ring];
+  document.getElementById('detailRing').textContent = RING_LABELS[node.ring];
+  document.getElementById('detailRing').style.color = ringColors[node.ring];
+  document.getElementById('detailContent').innerHTML = node.content;
+  document.getElementById('detailPanel').classList.add('open');
+  document.getElementById('overlay').classList.add('open');
+
+  // If truemed node, load notes
+  if (id === 'truemed') {
+    setTimeout(loadNotes, 50);
+  }
+}
+
+function closeDetail() {
+  selectedId = null;
+  document.getElementById('detailPanel').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+  document.querySelectorAll('.node').forEach(el => el.classList.remove('selected', 'related'));
+  document.querySelectorAll('.connection').forEach(p => p.classList.remove('active'));
+}
+
+/* ══════════════════════════════════════════════════
+   VIEW TOGGLE
+   ══════════════════════════════════════════════════ */
+function toggleView() {
+  isListView = !isListView;
+  const app = document.getElementById('app');
+  const btn = document.getElementById('viewToggle');
+  app.classList.toggle('list-mode', isListView);
+  btn.textContent = isListView ? 'Map View' : 'List View';
+  btn.classList.toggle('active', isListView);
+  if (!isListView) {
+    positionNodes();
+    renderConnections();
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   TRUEMED NOTES — localStorage
+   ══════════════════════════════════════════════════ */
+let saveTimeout = null;
+
+function loadNotes() {
+  const ta = document.getElementById('truemedNotes');
+  if (!ta) return;
+  const saved = localStorage.getItem(TRUEMED_KEY);
+  if (saved) ta.value = saved;
+  ta.addEventListener('input', () => {
+    clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(() => {
+      localStorage.setItem(TRUEMED_KEY, ta.value);
+      const badge = document.getElementById('noteSaved');
+      if (badge) { badge.classList.add('show'); setTimeout(() => badge.classList.remove('show'), 1500); }
+    }, 500);
+  });
+}
+
+/* ══════════════════════════════════════════════════
+   ENTRANCE ANIMATION
+   ══════════════════════════════════════════════════ */
+function animateEntrance() {
+  const nodes = document.querySelectorAll('.node');
+  nodes.forEach((el, i) => {
+    setTimeout(() => el.classList.add('visible'), 80 + i * 70);
+  });
+}
+
+/* ══════════════════════════════════════════════════
+   RESIZE
+   ══════════════════════════════════════════════════ */
+let resizeTimer;
+function handleResize() {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    if (!isListView && window.innerWidth > 768) {
+      positionNodes();
+      renderConnections();
+    }
+  }, 100);
+}
+
+/* ══════════════════════════════════════════════════
+   KEYBOARD
+   ══════════════════════════════════════════════════ */
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeDetail();
+});
+
+/* ══════════════════════════════════════════════════
+   BOOT
+   ══════════════════════════════════════════════════ */
+window.addEventListener('DOMContentLoaded', () => {
+  renderNodes();
+  if (window.innerWidth > 768) {
+    positionNodes();
+    renderConnections();
+  }
+  animateEntrance();
+});
+
+window.addEventListener('resize', handleResize);
+
+</script>
+</body>
+</html>
