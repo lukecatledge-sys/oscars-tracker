@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Know the Edge: HSA & FSA — SE Leader Playbook</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0808;--panel:rgba(24,18,18,.92);--panel-2:rgba(36,26,26,.95);
+  --gold:#deb974;--gold-2:#f3dfb5;--gold-dim:rgba(222,185,116,.15);
+  --purple:#cc9bff;--green:#97efba;--green-dim:rgba(151,239,186,.12);
+  --text:#f8f0e6;--muted:#b8a694;--shadow:0 20px 60px rgba(0,0,0,.5);--radius:16px;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 0%,rgba(151,239,186,.06),transparent 50%),radial-gradient(ellipse at 80% 100%,rgba(222,185,116,.05),transparent 50%),radial-gradient(ellipse at 50% 50%,rgba(204,155,255,.03),transparent 60%);pointer-events:none;z-index:0}
+.wrap{max-width:860px;margin:0 auto;padding:2rem 1.5rem 4rem;position:relative;z-index:1}
+.back{display:inline-block;color:var(--muted);font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;margin-bottom:1.5rem;opacity:.7;transition:opacity .2s}
+.back:hover{opacity:1}
+.eyebrow{font-size:.75rem;font-weight:700;letter-spacing:.25em;color:var(--green);text-transform:uppercase;margin-bottom:.75rem}
+h1{font-family:'Playfair Display',serif;font-weight:900;font-size:clamp(2rem,5vw,3.2rem);line-height:1.1;margin-bottom:1rem}
+.subtitle{font-size:1rem;color:var(--muted);max-width:600px;line-height:1.6;margin-bottom:1.5rem}
+.quote-box{border-left:3px solid var(--gold);padding:.75rem 1.25rem;margin-bottom:2.5rem;background:var(--gold-dim);border-radius:0 var(--radius) var(--radius) 0}
+.quote-box p{font-style:italic;font-size:.95rem;color:var(--gold-2);line-height:1.6}
+.quote-box cite{display:block;margin-top:.5rem;font-size:.8rem;color:var(--muted);font-style:normal}
+
+/* Sections */
+.section{margin-bottom:1.5rem;border:1px solid rgba(255,255,255,.06);border-radius:var(--radius);overflow:hidden;background:var(--panel)}
+.section-header{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;cursor:pointer;transition:background .2s;user-select:none}
+.section-header:hover{background:rgba(255,255,255,.03)}
+.section-header h2{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700}
+.section-toggle{font-size:1.2rem;color:var(--muted);transition:transform .3s}
+.section.collapsed .section-toggle{transform:rotate(-90deg)}
+.section-body{padding:0 1.5rem 1.5rem;overflow:hidden;transition:max-height .5s cubic-bezier(.22,1,.36,1),padding .3s}
+.section.collapsed .section-body{max-height:0!important;padding-top:0;padding-bottom:0}
+
+/* Timeline */
+.timeline{position:relative;padding-left:2.5rem}
+.timeline::before{content:'';position:absolute;left:.75rem;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--gold-dim),rgba(255,255,255,.06))}
+.tl-entry{position:relative;margin-bottom:2rem}
+.tl-entry:last-child{margin-bottom:0}
+.tl-dot{position:absolute;left:-2.5rem;top:.25rem;width:1.5rem;height:1.5rem;display:flex;align-items:center;justify-content:center}
+.tl-dot::before{content:'';width:10px;height:10px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold-dim)}
+.tl-entry.major .tl-dot::before{width:14px;height:14px;background:var(--green);box-shadow:0 0 12px var(--green-dim)}
+.tl-year{font-size:.85rem;font-weight:800;color:var(--gold);letter-spacing:.05em;margin-bottom:.25rem}
+.tl-entry.major .tl-year{color:var(--green);font-size:.95rem}
+.tl-title{font-weight:700;font-size:1rem;margin-bottom:.35rem}
+.tl-text{font-size:.88rem;color:var(--muted);line-height:1.65}
+.tl-text strong{color:var(--text)}
+
+/* Stat cards */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1rem;margin:1.25rem 0}
+.stat-card{background:var(--panel-2);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:1.25rem;text-align:center}
+.stat-num{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:900;color:var(--gold);line-height:1}
+.stat-label{font-size:.75rem;color:var(--muted);margin-top:.5rem;line-height:1.4;text-transform:uppercase;letter-spacing:.05em}
+
+/* Tables */
+.tbl-wrap{overflow-x:auto;margin:1rem 0}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th{text-align:left;padding:.6rem .75rem;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid rgba(255,255,255,.1)}
+td{padding:.6rem .75rem;border-bottom:1px solid rgba(255,255,255,.04);color:var(--text)}
+tr:hover td{background:rgba(255,255,255,.02)}
+
+/* Info blocks */
+.info-block{background:var(--panel-2);border-radius:12px;padding:1.25rem;margin:1rem 0}
+.info-block h4{font-size:.85rem;font-weight:700;margin-bottom:.5rem;color:var(--gold)}
+.info-block p,.info-block li{font-size:.88rem;color:var(--muted);line-height:1.65}
+.info-block ul{padding-left:1.25rem}
+.info-block li{margin-bottom:.35rem}
+.info-block strong{color:var(--text)}
+
+/* Highlight box */
+.highlight{border:1px solid var(--gold-dim);border-left:3px solid var(--gold);border-radius:0 var(--radius) var(--radius) 0;padding:1.25rem;margin:1.25rem 0;background:rgba(222,185,116,.05)}
+.highlight h4{color:var(--gold);font-size:.9rem;margin-bottom:.5rem}
+.highlight p{font-size:.88rem;color:var(--text);line-height:1.6}
+
+/* Impact tags */
+.impact{display:inline-block;font-size:.7rem;font-weight:700;padding:.2rem .6rem;border-radius:6px;background:var(--green-dim);color:var(--green);margin-left:.5rem;vertical-align:middle}
+
+/* Competitor cards */
+.comp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;margin:1rem 0}
+.comp-card{background:var(--panel-2);border:1px solid rgba(255,255,255,.06);border-left:3px solid var(--muted);border-radius:0 12px 12px 0;padding:1rem 1.25rem}
+.comp-card h4{font-size:.9rem;margin-bottom:.35rem}
+.comp-card p{font-size:.82rem;color:var(--muted);line-height:1.5}
+.comp-card.truemed{border-left-color:var(--green)}
+.comp-card.truemed h4{color:var(--green)}
+
+p.body-text{font-size:.9rem;color:var(--muted);line-height:1.65;margin:.75rem 0}
+p.body-text strong{color:var(--text)}
+h3.sub{font-size:1.05rem;margin:1.5rem 0 .75rem;color:var(--text)}
+
+@media(max-width:640px){
+  .wrap{padding:1.5rem 1rem 3rem}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .comp-grid{grid-template-columns:1fr}
+  .timeline{padding-left:2rem}
+  .tl-dot{left:-2rem}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a href="index.html" class="back">&larr; Playbook</a>
+<p class="eyebrow">Deep Knowledge</p>
+<h1>Know the Edge: HSA &amp; FSA</h1>
+<p class="subtitle">Bill Gurley says the best investors know the history AND the frontier better than anyone. This is your edge as Head of Solution Engineering at Truemed.</p>
+<div class="quote-box">
+  <p>"The best way to find a great investment is to know more about an industry than anyone else."</p>
+  <cite>— Bill Gurley, Benchmark Capital</cite>
+</div>
+
+<!-- ═══ SECTION 1: HISTORY ═══ -->
+<div class="section" id="s-history">
+  <div class="section-header" onclick="toggle('s-history')">
+    <h2>The History — Know Where It Came From</h2>
+    <span class="section-toggle">▼</span>
+  </div>
+  <div class="section-body" style="max-height:3000px">
+    <div class="timeline">
+
+      <div class="tl-entry">
+        <div class="tl-dot"></div>
+        <div class="tl-year">1978</div>
+        <div class="tl-title">FSA Created — Revenue Act of 1978</div>
+        <div class="tl-text">The <strong>Revenue Act of 1978</strong> established Flexible Spending Accounts. Before this, employers could contribute to Health Reimbursement Arrangements (HRAs) but employees couldn't customize for their own health needs. FSAs gave employees <strong>pre-tax control</strong> over medical spending for the first time. This was a landmark moment — the first time ordinary workers could shield health dollars from income tax.</div>
+      </div>
+
+      <div class="tl-entry">
+        <div class="tl-dot"></div>
+        <div class="tl-year">1978–2013</div>
+        <div class="tl-title">The Use-It-or-Lose-It Era (35 Years)</div>
+        <div class="tl-text">For 35 years, the original FSA rule was brutal: <strong>any unused funds were forfeited on December 31</strong>. This discouraged people from contributing more than they were certain they'd spend, severely limiting the program's reach and utility. Employers kept the forfeited funds — creating a perverse incentive against employee wellness spending.</div>
+      </div>
+
+      <div class="tl-entry">
+        <div class="tl-dot"></div>
+        <div class="tl-year">1996</div>
+        <div class="tl-title">Archer MSA Experiment — HIPAA</div>
+        <div class="tl-text">The <strong>Health Insurance Portability and Accountability Act (HIPAA)</strong> created Archer Medical Savings Accounts as a limited pilot program. Severely restricted: capped at <strong>750,000 self-employed taxpayers</strong>. Only ~150,000 accounts were ever opened. Too complex, too limited. But it <strong>planted the seed</strong> for what would become HSAs — proving the concept that tax-advantaged health savings could work.</div>
+      </div>
+
+      <div class="tl-entry major">
+        <div class="tl-dot"></div>
+        <div class="tl-year">December 8, 2003</div>
+        <div class="tl-title">HSA Created — The Big Moment</div>
+        <div class="tl-text">The <strong>Medicare Prescription Drug, Improvement, and Modernization Act</strong> was signed by President George W. Bush, effective January 1, 2004. HSAs were designed to pair with High-Deductible Health Plans (HDHPs), giving individuals the powerful <strong>"triple tax advantage"</strong> that FSAs lacked: tax-deductible contributions, tax-free growth, AND tax-free withdrawals for qualified medical expenses. Unlike FSAs, <strong>funds roll over indefinitely</strong> and can be invested. This was the foundational moment for everything Truemed does today.</div>
+      </div>
+
+      <div class="tl-entry">
+        <div class="tl-dot"></div>
+        <div class="tl-year">2013</div>
+        <div class="tl-title">FSA Gets a Lifeline</div>
+        <div class="tl-text">IRS introduced two options to soften the use-it-or-lose-it rule:<br>
+        <strong>(1) Carryover:</strong> Roll over up to 20% of max annual contribution ($610 in 2024, $680 in 2026) to the next year.<br>
+        <strong>(2) Grace Period:</strong> Use remaining funds through mid-March (2.5 months after plan year end).<br>
+        Plans must choose one or neither — <strong>cannot offer both</strong>.</div>
+      </div>
+
+      <div class="tl-entry">
+        <div class="tl-dot"></div>
+        <div class="tl-year">2024</div>
+        <div class="tl-title">HSA Hits Critical Mass</div>
+        <div class="tl-text"><strong>39+ million</strong> HSA accounts in the U.S. Total assets reach <strong>$146.9 billion</strong> (19% year-over-year growth). Investment assets surge to <strong>$64 billion</strong> (38% YoY growth), signaling a shift from "savings account" to <strong>"wealth-building tool."</strong> 1 in 5 Americans in their 30s now owns an HSA.</div>
+      </div>
+
+      <div class="tl-entry major">
+        <div class="tl-dot"></div>
+        <div class="tl-year">July 4, 2025</div>
+        <div class="tl-title">One Big Beautiful Bill — The Earthquake</div>
+        <div class="tl-text">The biggest HSA expansion since 2003. <strong>See dedicated section below.</strong></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 2: TAX MECHANICS ═══ -->
+<div class="section" id="s-tax">
+  <div class="section-header" onclick="toggle('s-tax')">
+    <h2>How It Works — IRS &amp; Tax Mechanics</h2>
+    <span class="section-toggle">▼</span>
+  </div>
+  <div class="section-body" style="max-height:4000px">
+
+    <h3 class="sub">The Triple Tax Advantage</h3>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-num">3x</div><div class="stat-label">Tax Advantages</div></div>
+      <div class="stat-card"><div class="stat-num">IRC §223</div><div class="stat-label">Governs HSAs</div></div>
+      <div class="stat-card"><div class="stat-num">§213(d)</div><div class="stat-label">Qualified Expenses</div></div>
+    </div>
+    <p class="body-text">HSAs are governed by <strong>Internal Revenue Code Section 223</strong>. The IRS sets contribution limits annually via Revenue Procedure. Qualified medical expenses are defined under <strong>IRC Section 213(d)</strong>: expenses that <em>"diagnose, cure, mitigate, treat, or prevent disease, or affect any structure or function of the body."</em></p>
+    <div class="highlight">
+      <h4>Why This Language Matters for Truemed</h4>
+      <p>That exact legal phrase — "affect any structure or function of the body" — is what enables <strong>Letters of Medical Necessity (LMNs)</strong>. A licensed provider determines that a product (fitness equipment, sleep tech, supplements) meets this standard for a <em>specific individual's</em> medical condition. This is the legal bridge between "wellness" and "medical expense."</p>
+    </div>
+
+    <h3 class="sub">HDHP Requirements (2025)</h3>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th></th><th>Self-Only</th><th>Family</th></tr>
+        <tr><td><strong>Min Deductible</strong></td><td>$1,650</td><td>$3,300</td></tr>
+        <tr><td><strong>Max Out-of-Pocket</strong></td><td>$8,300</td><td>$16,600</td></tr>
+      </table>
+    </div>
+
+    <h3 class="sub">Contribution Limits (2025 → 2026)</h3>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th></th><th>2025</th><th>2026 (OBBB)</th></tr>
+        <tr><td><strong>HSA Self-Only</strong></td><td>$4,300</td><td>$4,400</td></tr>
+        <tr><td><strong>HSA Family</strong></td><td>$8,550</td><td>$8,750</td></tr>
+        <tr><td><strong>Catch-up (55+)</strong></td><td>+$1,000</td><td>+$1,000</td></tr>
+      </table>
+    </div>
+
+    <h3 class="sub">FSA Limits</h3>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th></th><th>2025</th><th>2026</th></tr>
+        <tr><td><strong>Health FSA</strong></td><td>$3,300</td><td>$3,400</td></tr>
+        <tr><td><strong>Dependent Care FSA</strong></td><td>$5,000</td><td>$7,500</td></tr>
+        <tr><td><strong>Carryover Max</strong></td><td>$640</td><td>$680</td></tr>
+      </table>
+    </div>
+
+    <h3 class="sub">The Letter of Medical Necessity (LMN)</h3>
+    <div class="info-block">
+      <h4>The Key Mechanism for Truemed's Business</h4>
+      <p>A formal clinical document explaining why a specific product/service is essential for treating, mitigating, or preventing a diagnosed medical condition.</p>
+      <ul>
+        <li><strong>Must include:</strong> Diagnosis, ICD-10 codes, treatment details, medical justification, provider credentials</li>
+        <li><strong>Issued by:</strong> Licensed providers (MD, NP, PA, LPC)</li>
+        <li><strong>Validity:</strong> Typically 12 months</li>
+        <li><strong>The bridge:</strong> Without an LMN, gym equipment/sleep tech/fitness apps = NOT HSA-eligible. With an LMN establishing medical necessity for the individual, they CAN qualify under §213(d)</li>
+      </ul>
+    </div>
+    <div class="info-block">
+      <h4>How Truemed's Process Works</h4>
+      <ul>
+        <li><strong>Step 1:</strong> Customer completes health survey at checkout</li>
+        <li><strong>Step 2:</strong> Licensed provider reviews survey and health information (1-2 days)</li>
+        <li><strong>Step 3:</strong> If medically necessary, LMN is issued and HSA/FSA payment proceeds</li>
+      </ul>
+      <p>This clinical pathway is <strong>hard to replicate</strong> — it requires a provider network, clinical workflows, and liability management that pure payment processors don't have.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 3: MARKET ═══ -->
+<div class="section" id="s-market">
+  <div class="section-header" onclick="toggle('s-market')">
+    <h2>The Market — Know the Numbers</h2>
+    <span class="section-toggle">▼</span>
+  </div>
+  <div class="section-body" style="max-height:3000px">
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-num">39M+</div><div class="stat-label">HSA Accounts (2024)</div></div>
+      <div class="stat-card"><div class="stat-num">$146.9B</div><div class="stat-label">Total HSA Assets</div></div>
+      <div class="stat-card"><div class="stat-num">$64B</div><div class="stat-label">HSA Investment Assets</div></div>
+      <div class="stat-card"><div class="stat-num">57%</div><div class="stat-label">Companies Offering HSAs</div></div>
+      <div class="stat-card"><div class="stat-num">1 in 5</div><div class="stat-label">30-somethings with HSA</div></div>
+      <div class="stat-card"><div class="stat-num">10.2%</div><div class="stat-label">CAGR through 2033</div></div>
+      <div class="stat-card"><div class="stat-num">$199B</div><div class="stat-label">Projected Assets 2027</div></div>
+      <div class="stat-card"><div class="stat-num">45M</div><div class="stat-label">Projected Accounts 2027</div></div>
+    </div>
+    <div class="info-block">
+      <h4>Key Context</h4>
+      <ul>
+        <li><strong>19% YoY</strong> asset growth in 2024 — accelerating, not plateauing</li>
+        <li><strong>38% YoY</strong> investment asset growth — people treating HSAs as wealth-building tools, not just savings</li>
+        <li><strong>61%</strong> of HSA accounts are employer-affiliated</li>
+        <li><strong>9%</strong> of accounts now investing HSA assets (up from ~5% a few years ago)</li>
+        <li>Dependent Care FSA contribution limit was unchanged at <strong>$5,000 from 1986 to 2026</strong> — 40 YEARS without an increase</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 4: ONE BIG BEAUTIFUL BILL ═══ -->
+<div class="section" id="s-obbb">
+  <div class="section-header" onclick="toggle('s-obbb')">
+    <h2>The Earthquake — One Big Beautiful Bill (July 4, 2025)</h2>
+    <span class="section-toggle">▼</span>
+  </div>
+  <div class="section-body" style="max-height:5000px">
+    <div class="highlight">
+      <h4>The Biggest HSA Expansion Since 2003</h4>
+      <p>Every new eligible expense category is a new merchant vertical. Every new eligible person is a new customer. The window to capture these markets is NOW — before competitors catch up.</p>
+    </div>
+
+    <h3 class="sub">Expanded Eligibility</h3>
+    <div class="info-block">
+      <ul>
+        <li><strong>Bronze &amp; Catastrophic health plans</strong> now HSA-eligible <span class="impact">20M+ newly eligible</span></li>
+        <li><strong>Working seniors on Medicare</strong> hospital insurance can now contribute to HSAs <span class="impact">65+ market unlocked</span></li>
+        <li><strong>Telehealth services</strong> permanently HSA-compatible (no longer affects HDHP status) <span class="impact">Telehealth-first friendly</span></li>
+      </ul>
+    </div>
+
+    <h3 class="sub">New Eligible Expenses</h3>
+    <div class="info-block">
+      <ul>
+        <li><strong>Gym memberships</strong> now qualify as qualified medical expenses <span class="impact">Massive new merchant category</span></li>
+        <li><strong>Direct Primary Care (DPC)</strong> up to $150/mo individual, $300/mo family <span class="impact">New healthcare model</span></li>
+        <li><strong>Over-the-counter health products</strong> with increased flexibility <span class="impact">Broader product eligibility</span></li>
+      </ul>
+    </div>
+
+    <h3 class="sub">Contribution Increases</h3>
+    <div class="info-block">
+      <ul>
+        <li>2026 HSA: <strong>$4,400</strong> self / <strong>$8,750</strong> family</li>
+        <li><strong>Income-based supplemental contributions</strong> for individuals under $75K / $150K family</li>
+        <li>Dependent Care FSA: <strong>$5,000 → $7,500</strong> — first increase in 40 years</li>
+      </ul>
+    </div>
+
+    <div class="highlight">
+      <h4>What This Means for Truemed</h4>
+      <p><strong>Gym memberships alone</strong> represent thousands of potential new merchant partners (gyms, fitness studios, CrossFit boxes, boutique fitness). Each new eligible category is a time-limited first-mover window before competitors catch up. 20M+ newly eligible Americans means a dramatically larger customer base for existing merchants.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 5: THE EDGE ═══ -->
+<div class="section" id="s-edge">
+  <div class="section-header" onclick="toggle('s-edge')">
+    <h2>The Edge — Know the Future Better Than Anyone</h2>
+    <span class="section-toggle">▼</span>
+  </div>
+  <div class="section-body" style="max-height:5000px">
+
+    <h3 class="sub">Truemed's Moat (What's Hard to Copy)</h3>
+    <div class="info-block">
+      <ul>
+        <li><strong>Built-in provider network</strong> for Letters of Medical Necessity — competitors can't easily replicate clinical workflows</li>
+        <li><strong>30-60% AOV lift</strong> for merchants (proven, measurable, repeatable)</li>
+        <li><strong>40% better</strong> month-2 customer retention</li>
+        <li><strong>&lt;30 minute</strong> Shopify integration (no engineering required)</li>
+        <li><strong>$3B GMV</strong> from launch partner base</li>
+        <li><strong>$34M Series A</strong> led by a16z, $44.1M total raised</li>
+      </ul>
+    </div>
+
+    <h3 class="sub">Competitive Landscape</h3>
+    <div class="comp-grid">
+      <div class="comp-card">
+        <h4>Flex</h4>
+        <p>HSA/FSA ecommerce payments — hosted checkout and API integrations. Direct competitor on payment flow, but lacks the clinical pathway.</p>
+      </div>
+      <div class="comp-card">
+        <h4>BenefitWallet</h4>
+        <p>HSA/HRA/FSA account administration and management. Different layer entirely (admin vs. checkout). Not a direct threat.</p>
+      </div>
+      <div class="comp-card">
+        <h4>Aya</h4>
+        <p>Employee benefits platform with Visa card + claims management. More employer-focused. Different distribution channel.</p>
+      </div>
+      <div class="comp-card">
+        <h4>TempoPay</h4>
+        <p>HSA/FSA payment platform. Newer entrant. Competing on payment processing, not on making products eligible.</p>
+      </div>
+      <div class="comp-card truemed">
+        <h4>Truemed's Edge</h4>
+        <p><strong>None of these have the clinical pathway.</strong> They process payments for already-eligible products. Truemed <em>makes products eligible</em> through the LMN workflow. That's the moat.</p>
+      </div>
+    </div>
+
+    <h3 class="sub">Where It's All Going</h3>
+    <div class="info-block">
+      <ul>
+        <li><strong>Real-time eligibility determination</strong> — instant LMN decisions, not async 1-2 day reviews</li>
+        <li><strong>AI-driven medical necessity assessment</strong> — reducing provider review burden while maintaining compliance</li>
+        <li><strong>Proactive customer HSA balance nudges</strong> — "You have $2,400 available — shop health products now"</li>
+        <li><strong>Employer-channel distribution</strong> — companies offering Truemed as an employee wellness benefit</li>
+        <li><strong>HSA as retirement vehicle</strong> — growing awareness that HSA funds never expire, can be invested, have no RMDs. Growing balances = more available for health purchases</li>
+        <li><strong>Regulatory arbitrage windows</strong> — each new eligible category creates a time-limited first-mover advantage. First to onboard merchants in new categories wins.</li>
+      </ul>
+    </div>
+
+    <div class="quote-box">
+      <p>"Know the edge. Know the history. Understand the deep mechanics. Then you'll see opportunities everyone else misses."</p>
+      <cite>— Bill Gurley's investment philosophy, applied to your SE leadership</cite>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 6: TRUEMED AT A GLANCE ═══ -->
+<div class="section" id="s-truemed">
+  <div class="section-header" onclick="toggle('s-truemed')">
+    <h2>Truemed — At a Glance</h2>
+    <span class="section-toggle">▼</span>
+  </div>
+  <div class="section-body" style="max-height:3000px">
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-num">$34M</div><div class="stat-label">Series A (a16z)</div></div>
+      <div class="stat-card"><div class="stat-num">$44.1M</div><div class="stat-label">Total Raised</div></div>
+      <div class="stat-card"><div class="stat-num">~$6.8M</div><div class="stat-label">Revenue (3x YoY)</div></div>
+      <div class="stat-card"><div class="stat-num">$3B</div><div class="stat-label">Launch Partner GMV</div></div>
+      <div class="stat-card"><div class="stat-num">30-60%</div><div class="stat-label">Higher AOV for Merchants</div></div>
+      <div class="stat-card"><div class="stat-num">~30%</div><div class="stat-label">Customer Savings</div></div>
+    </div>
+    <div class="info-block">
+      <h4>Key Details</h4>
+      <ul>
+        <li><strong>Founded by:</strong> Calley Means &amp; Justin Mares</li>
+        <li><strong>What they do:</strong> Payment platform enabling pre-tax HSA/FSA dollars for health &amp; wellness products via Letters of Medical Necessity</li>
+        <li><strong>Key partners:</strong> Peloton, Eight Sleep, Nike Strength, 24 Hour Fitness, CrossFit, Secretlab, Wahoo Fitness</li>
+        <li><strong>Integration:</strong> &lt;30 min Shopify setup, REST API with Python &amp; TypeScript SDKs</li>
+        <li><strong>Merchant benefit:</strong> 30-60% higher AOV, 40% better month-2 retention</li>
+        <li><strong>Customer benefit:</strong> ~30% savings using pre-tax dollars, no in-person visit required</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+</div><!-- /.wrap -->
+
+<script>
+function toggle(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('collapsed');
+}
+// On mobile, start sections collapsed
+if (window.innerWidth <= 768) {
+  document.querySelectorAll('.section').forEach(s => s.classList.add('collapsed'));
+}
+</script>
+</body>
+</html>

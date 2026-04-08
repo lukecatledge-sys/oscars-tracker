@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    { "source": "/dorsey", "destination": "/dorsey.html" },
+    { "source": "/build", "destination": "/build-checklist.html" },
+    { "source": "/edge", "destination": "/know-the-edge.html" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}

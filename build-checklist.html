@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Things to Build at Truemed | SE Leader Playbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0808;
+    --panel: rgba(24,18,18,.92);
+    --panel-2: rgba(36,26,26,.95);
+    --gold: #deb974;
+    --purple: #cc9bff;
+    --green: #97efba;
+    --text: #f8f0e6;
+    --muted: #b8a694;
+    --shadow: 0 20px 60px rgba(0,0,0,.5);
+    --radius: 16px;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 10%, rgba(222,185,116,.06) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(204,155,255,.05) 0%, transparent 50%),
+      radial-gradient(ellipse 50% 50% at 50% 50%, rgba(151,239,186,.03) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 840px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* Back nav */
+  .back-nav {
+    margin-bottom: 48px;
+  }
+
+  .back-nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    transition: color .2s;
+  }
+
+  .back-nav a:hover {
+    color: var(--gold);
+  }
+
+  /* Header */
+  .page-header {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+
+  .eyebrow {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+
+  .page-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: clamp(2rem, 5vw, 3rem);
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  .page-header .subtitle {
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 560px;
+    margin: 0 auto 32px;
+    line-height: 1.7;
+  }
+
+  /* Progress */
+  .progress-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .progress-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+  }
+
+  .progress-text span {
+    color: var(--gold);
+    font-weight: 800;
+  }
+
+  .progress-bar-track {
+    width: 100%;
+    max-width: 400px;
+    height: 4px;
+    background: rgba(255,255,255,.08);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--gold), #e8c97a);
+    border-radius: 4px;
+    transition: width .4s cubic-bezier(.4,0,.2,1);
+  }
+
+  /* Sections */
+  .section {
+    margin-bottom: 48px;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 22px;
+    margin-bottom: 20px;
+    padding-left: 4px;
+  }
+
+  .section-title.gold { color: var(--gold); }
+  .section-title.purple { color: var(--purple); }
+  .section-title.green { color: var(--green); }
+
+  /* Cards */
+  .card {
+    background: var(--panel);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: transform .2s, box-shadow .2s;
+  }
+
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 24px 72px rgba(0,0,0,.6);
+  }
+
+  .card.border-gold { border-left: 4px solid var(--gold); }
+  .card.border-purple { border-left: 4px solid var(--purple); }
+  .card.border-green { border-left: 4px solid var(--green); }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px 24px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .card-header input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    border: 2px solid var(--muted);
+    border-radius: 6px;
+    background: transparent;
+    cursor: pointer;
+    margin-top: 4px;
+    transition: all .2s;
+    position: relative;
+  }
+
+  .card-header input[type="checkbox"]:checked {
+    background: var(--gold);
+    border-color: var(--gold);
+  }
+
+  .card-header input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    width: 6px;
+    height: 11px;
+    border: solid var(--bg);
+    border-width: 0 2.5px 2.5px 0;
+    transform: rotate(45deg);
+  }
+
+  .card-header input[type="checkbox"]:hover {
+    border-color: var(--gold);
+  }
+
+  .card.checked .card-title-area h3 {
+    opacity: .5;
+    text-decoration: line-through;
+    text-decoration-color: var(--muted);
+  }
+
+  .card-title-area {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .priority-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+  }
+
+  .priority-tag.quick-win {
+    background: rgba(222,185,116,.15);
+    color: var(--gold);
+  }
+
+  .priority-tag.medium {
+    background: rgba(204,155,255,.15);
+    color: var(--purple);
+  }
+
+  .priority-tag.ambitious {
+    background: rgba(151,239,186,.15);
+    color: var(--green);
+  }
+
+  .card-title-area h3 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 17px;
+    line-height: 1.4;
+    color: var(--text);
+    margin-bottom: 4px;
+    transition: opacity .3s, text-decoration .3s;
+  }
+
+  .inspiration {
+    font-size: 13px;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  .expand-icon {
+    font-size: 22px;
+    font-weight: 300;
+    color: var(--muted);
+    min-width: 24px;
+    text-align: center;
+    line-height: 28px;
+    margin-top: 2px;
+    transition: transform .3s, color .2s;
+  }
+
+  .card.expanded .expand-icon {
+    transform: rotate(45deg);
+    color: var(--gold);
+  }
+
+  /* Card body - expandable */
+  .card-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .4s cubic-bezier(.4,0,.2,1), opacity .3s;
+    opacity: 0;
+  }
+
+  .card.expanded .card-body {
+    opacity: 1;
+  }
+
+  .card-body-inner {
+    padding: 0 24px 24px;
+    padding-left: 62px;
+  }
+
+  .detail-section {
+    background: var(--panel-2);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 12px;
+  }
+
+  .detail-section:last-child {
+    margin-bottom: 0;
+  }
+
+  .detail-section h4 {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .detail-section.why h4 { color: var(--gold); }
+  .detail-section.how h4 { color: var(--purple); }
+  .detail-section.parallel h4 { color: var(--green); }
+
+  .detail-section p {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--muted);
+  }
+
+  /* Mobile responsive */
+  @media (max-width: 640px) {
+    .container {
+      padding: 24px 16px 60px;
+    }
+
+    .back-nav {
+      margin-bottom: 32px;
+    }
+
+    .page-header {
+      margin-bottom: 40px;
+    }
+
+    .page-header .subtitle {
+      font-size: 15px;
+    }
+
+    .card-header {
+      padding: 16px 16px;
+      gap: 12px;
+    }
+
+    .card-title-area h3 {
+      font-size: 15px;
+    }
+
+    .card-body-inner {
+      padding: 0 16px 20px;
+      padding-left: 50px;
+    }
+
+    .detail-section {
+      padding: 14px 16px;
+    }
+
+    .section-title {
+      font-size: 20px;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .card-body-inner {
+      padding-left: 16px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Back nav -->
+  <nav class="back-nav">
+    <a href="index.html">&larr; Back to Playbook</a>
+  </nav>
+
+  <!-- Header -->
+  <header class="page-header">
+    <div class="eyebrow">Build List</div>
+    <h1>Things to Build at Truemed</h1>
+    <p class="subtitle">Automations, Slack bots, and AI agents inspired by Ramp's approach. Check them off as you build.</p>
+    <div class="progress-area">
+      <div class="progress-text"><span id="completed-count">0</span> of 13 completed</div>
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill" id="progress-fill"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Section: Quick Wins -->
+  <section class="section">
+    <h2 class="section-title gold">Quick Wins</h2>
+
+    <!-- Card 1 -->
+    <div class="card border-gold" data-id="merchant-onboarding">
+      <div class="card-header" onclick="toggleExpand(this)">
+        <input type="checkbox" onclick="event.stopPropagation(); toggleCheck('merchant-onboarding')">
+        <div class="card-title-area">
+          <span class="priority-tag quick-win">Quick Win</span>
+          <h3>Slack Bot: Merchant Onboarding Assistant</h3>
+          <span class="inspiration">Inspired by: Ramp Slack Integration</span>
+        </div>
+        <span class="expand-icon">+</span>
+      </div>
+      <div class="card-body">
+        <div class="card-body-inner">
+          <div class="detail-section why">
+            <h4>Why Build This</h4>
+            <p>Merchants struggle with integration setup. A <code>/truemed onboard</code> command in Slack walks them through each step, checks API key status, verifies webhook endpoints, and troubleshoots common issues &mdash; all without leaving Slack.</p>
+          </div>
+          <div class="detail-section how">
+            <h4>How to Build It</h4>
+            <p>Build a Slack app with slash commands. Connect to Truemed's merchant API to check integration status. Use Block Kit for rich interactive messages with buttons and dropdowns.</p>
+          </div>
+          <div class="detail-section parallel">
+            <h4>Ramp Parallel</h4>
+            <p>Ramp's Slack bot lets employees request funds, get approvals, and check policies without opening the app. Same principle: meet users where they already are.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="card border-gold" data-id="eligibility-checker">
+      <div class="card-header" onclick="toggleExpand(this)">
+        <input type="checkbox" onclick="event.stopPropagation(); toggleCheck('eligibility-checker')">
+        <div class="card-title-area">
+          <span class="priority-tag quick-win">Quick Win</span>
+          <h3>Slack Bot: HSA/FSA Eligibility Checker</h3>
+          <span class="inspiration">Inspired by: Ramp Policy Agent</span>
+        </div>
+        <span class="expand-icon">+</span>
+      </div>
+      <div class="card-body">
+        <div class="card-body-inner">
+          <div class="detail-section why">
+            <h4>Why Build This</h4>
+            <p>Sales and support teams constantly get asked "Is X eligible for HSA/FSA?" A <code>/truemed eligible [product]</code> command gives instant answers with IRS references.</p>
+          </div>
+          <div class="detail-section how">
+            <h4>How to Build It</h4>
+            <p>Build an eligibility rules engine based on IRS Section 213(d) qualified medical expense categories. Index common products and categories. Return yes/no with explanation and relevant IRS guidance.</p>
+          </div>
+          <div class="detail-section parallel">
+            <h4>Ramp Parallel</h4>
+            <p>Ramp's AI-powered policy assistant lets employees ask natural-language questions about spending policies. Same idea: instant compliance answers.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="card border-gold" data-id="daily-digest">
+      <div class="card-header" onclick="toggleExpand(this)">
+        <input type="checkbox" onclick="event.stopPropagation(); toggleCheck('daily-digest')">
+        <div class="card-title-area">
+          <span class="priority-tag quick-win">Quick Win</span>
+          <h3>Daily Digest Bot</h3>
+          <span class="inspiration">Inspired by: Ramp Business Activity Alerts</span>
+        </div>
+        <span class="expand-icon">+</span>
+      </div>
+      <div class="card-body">
+        <div class="card-body-inner">
+          <div class="detail-section why">
+            <h4>Why Build This</h4>
+            <p>Start every morning knowing the state of the business. New merchant signups, LMN approval/denial rates, transaction volumes, flagged issues &mdash; all in one Slack message at 8am.</p>
+          </div>
+          <div class="detail-section how">
+            <h4>How to Build It</h4>
+            <p>Scheduled Slack webhook (cron job or serverless function). Query Truemed's internal APIs for daily metrics. Format as a clean Block Kit message with key stats.</p>
+          </div>
+          <div class="detail-section parallel">
+            <h4>Ramp Parallel</h4>
+            <p>Ramp sends real-time business activity alerts for large transactions and spending summaries. Daily digest is the minimum viable version.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Medium Effort -->
+  <section class="section">
+    <h2 class="section-title purple">Medium Effort</h2>
+
+    <!-- Card 4 -->
+    <div class="card border-purple" data-id="health-monitor">
+      <div class="card-header" onclick="toggleExpand(this)">
+        <input type="checkbox" onclick="event.stopPropagation(); toggleCheck('health-monitor')">
+        <div class="card-title-area">
+          <span class="priority-tag medium">Medium</span>
+          <h3>Merchant Integration Health Monitor</h3>
+          <span class="inspiration">Inspired by: Ramp Accounting Sync</span>
+        </div>
+        <span class="expand-icon">+</span>
+      </div>
+      <div class="card-body">
+        <div class="card-body-inner">
+          <div class="detail-section why">
+            <h4>Why Build This</h4>
+            <p>Broken integrations = lost revenue for merchants AND Truemed. Automated health checks catch webhook failures, API errors, and checkout drops before merchants notice.</p>
+          </div>
+          <div class="detail-section how">
+            <h4>How to Build It</h4>
+            <p>Build a monitoring service that periodically pings merchant endpoints, validates webhook delivery, tracks error rates. Alert via Slack when thresholds exceeded. Dashboard for the SE team.</p>
+          </div>
+          <div class="detail-section parallel">
+            <h4>Ramp Parallel</h4>
+            <p>Ramp's real-time accounting sync ensures data flows correctly to QuickBooks/NetSuite/Xero. Same principle: proactively detect integration failures.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 5 -->
+    <div class="card border-purple" data-id="lmn-prescreening">
+      <div class="card-header" onclick="toggleExpand(this)">
+        <input type="checkbox" onclick="event.stopPropagation(); toggleCheck('lmn-prescreening')">
+        <div class="card-title-area">
+          <span class="priority-tag medium">Medium</span>
+          <h3>LMN Pre-Screening Agent</h3>
+          <span class="inspiration">Inspired by: Ramp Policy Agent</span>
+        </div>
+        <span class="expand-icon">+</span>
+      </div>
+      <div class="card-body">
+        <div class="card-body-inner">
+          <div class="detail-section why">
+            <h4>Why Build This</h4>
+            <p>Licensed providers review every health survey for medical necessity. An AI pre-screening agent can classify surveys as likely-approve vs. likely-deny, fast-tracking high-confidence cases and reducing provider workload by 30-50%.</p>
+          </div>
+          <div class="detail-section how">
+            <h4>How to Build It</h4>
+            <p>Train a classifier on historical LMN approval/denial patterns. Flag confidence levels. Route high-confidence approvals to expedited review. Keep provider as final decision-maker for compliance.</p>
+          </div>
+          <div class="detail-section parallel">
+            <h4>Ramp Parallel</h4>
+            <p>Ramp's policy agent reviews 100% of expenses automatically, approving compliant ones and flagging exceptions. Same pattern: AI handles the clear cases, humans handle the edge cases.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 6 -->
+    <div class="card border-purple" data-id="eligibility-chatbot">
+      <div class="card-header" onclick="toggleExpand(this)">
+        <input type="checkbox" onclick="event.stopPropagation(); toggleCheck('eligibility-chatbot')">
+        <div class="card-title-area">
+          <span class="priority-tag medium">Medium</span>
+          <h3>Customer "Is This Eligible?" Chatbot</h3>
+          <span class="inspiration">Inspired by: Ramp AI Assistant</span>
+        </div>
+        <span class="expand-icon">+</span>
+      </div>
+      <div class="card-body">
+        <div class="card-body-inner">
+          <div class="detail-section why">
+            <h4>Why Build This</h4>
+            <p>Customers abandon checkout when unsure if their HSA/FSA covers a product. A public-facing chatbot answers "Can I use my HSA for [X]?" instantly, with confidence.</p>
+          </div>
+          <div class="detail-section how">
+            <h4>How to Build It</h4>
+            <p>RAG-based chatbot indexed on IRS eligible expense lists, Truemed's approved categories, and common product mappings. Embed on merchant checkout pages or Truemed's site.</p>
+          </div>
+          <div class="detail-section parallel">
+            <h4>Ramp Parallel</h4>
+            <p>Ramp's natural-language AI lets employees ask policy questions without commands. Same UX: natural language in, definitive answer out.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 7 -->
+    <div class="card border-purple" data-id="success-alerts">
+      <div class="card-header" onclick="toggleExpand(this)">
+        <input type="checkbox" onclick="event.stopPropagation(); toggleCheck('success-alerts')">
+        <div class="card-title-area">
+          <span class="priority-tag medium">Medium</span>
+          <h3>Merchant Success Alerts</h3>
+          <span class="inspiration">Inspired by: Ramp Spending Insights</span>
+        </div>
+        <span class="expand-icon">+</span>
+      </div>
+      <div class="card-body">
+        <div class="card-body-inner">
+          <div class="detail-section why">
+            <h4>Why Build This</h4>
+            <p>Detect churn before it happens. When a merchant's transaction volume drops 20%+ week-over-week, or their integration starts erroring, proactively reach out with help.</p>
+          </div>
+          <div class="detail-section how">
+            <h4>How to Build It</h4>
+            <p>Time-series analysis on merchant transaction data. Anomaly detection for volume drops, error spikes, checkout abandonment increases. Alert SE team via Slack with context.</p>
+          </div>
+          <div class="detail-section parallel">
+            <h4>Ramp Parallel</h4>
+            <p>Ramp provides spending insights and identifies savings opportunities proactively. Same idea: don't wait for problems to be reported.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Ambitious -->
+  <section class="section">
+    <h2 class="section-title green">Ambitious</h2>
+
+    <!-- Card 8 -->
+    <div class="card border-green" data-id="coding-agent">
+      <div class="card-header" onclick="toggleExpand(this)">
+        <input type="checkbox" onclick="event.stopPropagation(); toggleCheck('coding-agent')">
+        <div class="card-title-area">
+          <span class="priority-tag ambitious">Ambitious</span>
+          <h3>Internal Coding/QA Agent</h3>
+          <span class="inspiration">Inspired by: Ramp's Inspect Agent</span>
+        </div>
+        <span class="expand-icon">+</span>
+      </div>
+      <div class="card-body">
+        <div class="card-body-inner">
+          <div class="detail-section why">
+            <h4>Why Build This</h4>
+            <p>Ramp built "Inspect" &mdash; an internal AI coding agent that now handles ~30% of merged PRs. It runs tests, checks monitoring dashboards, queries databases, and visually verifies frontend changes. Truemed could build a similar agent focused on payment integration testing and compliance verification.</p>
+          </div>
+          <div class="detail-section how">
+            <h4>How to Build It</h4>
+            <p>Sandboxed dev environments (Modal or similar). Agent has access to test merchant accounts, can run integration tests, verify payment flows end-to-end, check compliance rules. Closed-loop verification: agent tests its own changes.</p>
+          </div>
+          <div class="detail-section parallel">
+            <h4>Ramp Parallel</h4>
+            <p>Ramp's Inspect runs in sandboxed VMs with full-stack environments. Key insight: the "verification loop" (agent can check its own work) is the differentiator.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 9 -->
+    <div class="card border-green" data-id="regulatory-monitor">
+      <div class="card-header" onclick="toggleExpand(this)">
+        <input type="checkbox" onclick="event.stopPropagation(); toggleCheck('regulatory-monitor')">
+        <div class="card-title-area">
+          <span class="priority-tag ambitious">Ambitious</span>
+          <h3>Regulatory Change Monitor</h3>
+          <span class="inspiration">Inspired by: Bill Gurley &mdash; Know the Edge</span>
+        </div>
+        <span class="expand-icon">+</span>
+      </div>
+      <div class="card-body">
+        <div class="card-body-inner">
+          <div class="detail-section why">
+            <h4>Why Build This</h4>
+            <p>IRS rules on HSA/FSA eligible expenses change. New legislation (like the One Big Beautiful Bill) opens new product categories. First to know = first to onboard merchants in new categories.</p>
+          </div>
+          <div class="detail-section how">
+            <h4>How to Build It</h4>
+            <p>Monitor IRS.gov, Federal Register, and Congressional databases for HSA/FSA-related updates. Parse changes, classify impact (new eligible category? limit change? rule modification?). Alert team with plain-language summary and action items.</p>
+          </div>
+          <div class="detail-section parallel">
+            <h4>Ramp Parallel</h4>
+            <p>No direct Ramp parallel &mdash; this is a regulatory moat play unique to Truemed's position in the HSA/FSA ecosystem.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 10 -->
+    <div class="card border-green" data-id="reimbursement-automation">
+      <div class="card-header" onclick="toggleExpand(this)">
+        <input type="checkbox" onclick="event.stopPropagation(); toggleCheck('reimbursement-automation')">
+        <div class="card-title-area">
+          <span class="priority-tag ambitious">Ambitious</span>
+          <h3>Customer Reimbursement Automation</h3>
+          <span class="inspiration">Inspired by: Ramp Receipt Automation</span>
+        </div>
+        <span class="expand-icon">+</span>
+      </div>
+      <div class="card-body">
+        <div class="card-body-inner">
+          <div class="detail-section why">
+            <h4>Why Build This</h4>
+            <p>Many customers pay out-of-pocket, then want to submit for HSA/FSA reimbursement. Auto-generate a complete reimbursement packet: receipt + LMN + pre-filled claim form for their specific HSA administrator.</p>
+          </div>
+          <div class="detail-section how">
+            <h4>How to Build It</h4>
+            <p>Template system for major HSA administrators (Fidelity, HealthEquity, Optum, etc.). Auto-fill with transaction details and LMN reference. Deliver via email or download as PDF.</p>
+          </div>
+          <div class="detail-section parallel">
+            <h4>Ramp Parallel</h4>
+            <p>Ramp automatically captures receipts and prefills memos. Same principle: automate the tedious paperwork that creates friction.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 11 -->
+    <div class="card border-green" data-id="capability-composer">
+      <div class="card-header" onclick="toggleExpand(this)">
+        <input type="checkbox" onclick="event.stopPropagation(); toggleCheck('capability-composer')">
+        <div class="card-title-area">
+          <span class="priority-tag ambitious">Ambitious</span>
+          <h3>Real-Time Capability Composer</h3>
+          <span class="inspiration">Inspired by: Dorsey Framework &mdash; Intelligence Layer</span>
+        </div>
+        <span class="expand-icon">+</span>
+      </div>
+      <div class="card-body">
+        <div class="card-body-inner">
+          <div class="detail-section why">
+            <h4>Why Build This</h4>
+            <p>Dorsey's key insight: a company's limiting factor is its roadmap. Instead of fixed features, let merchants compose capabilities via API. "I need HSA checkout + installments + LMN for fitness equipment" &rarr; system assembles it dynamically.</p>
+          </div>
+          <div class="detail-section how">
+            <h4>How to Build It</h4>
+            <p>Modular capability architecture where checkout, LMN workflows, payment plans, and product eligibility are independent composable services. API endpoint that accepts intent and returns a configured experience.</p>
+          </div>
+          <div class="detail-section parallel">
+            <h4>Dorsey Parallel</h4>
+            <p>This IS the intelligence layer from the Dorsey framework. Block's system composes financial products (lending + payments + repayment schedule) for specific merchants at specific moments.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Company-as-Intelligence -->
+  <section class="section">
+    <h2 class="section-title gold">&#9733; Company-as-Intelligence</h2>
+
+    <!-- Card 12 -->
+    <div class="card border-gold" data-id="company-world-model">
+      <div class="card-header" onclick="toggleExpand(this)">
+        <input type="checkbox" onclick="event.stopPropagation(); toggleCheck('company-world-model')">
+        <div class="card-title-area">
+          <span class="priority-tag ambitious">Ambitious</span>
+          <h3>Company World Model</h3>
+          <span class="inspiration">Inspired by: Dorsey Framework &mdash; World Models</span>
+        </div>
+        <span class="expand-icon">+</span>
+      </div>
+      <div class="card-body">
+        <div class="card-body-inner">
+          <div class="detail-section why">
+            <h4>Why Build This</h4>
+            <p>Aggregate all internal artifacts (Slack messages, support tickets, Jira, code commits, docs, meeting recordings) into a queryable intelligence. Ask: "What are our top 5 merchant pain points this week?" and get a real answer.</p>
+          </div>
+          <div class="detail-section how">
+            <h4>How to Build It</h4>
+            <p>RAG pipeline indexing internal data sources. Start small: just Slack + support tickets. Build a query interface (internal chatbot or web app). Expand to include code repos, docs, meeting transcripts.</p>
+          </div>
+          <div class="detail-section parallel">
+            <h4>Dorsey Parallel</h4>
+            <p>Block's Company World Model tracks decisions, discussions, plans, problems, and progress from ALL artifacts. Replaces managers who relay information up/down the chain.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 13 -->
+    <div class="card border-gold" data-id="customer-world-model">
+      <div class="card-header" onclick="toggleExpand(this)">
+        <input type="checkbox" onclick="event.stopPropagation(); toggleCheck('customer-world-model')">
+        <div class="card-title-area">
+          <span class="priority-tag ambitious">Ambitious</span>
+          <h3>Customer World Model</h3>
+          <span class="inspiration">Inspired by: Dorsey Framework &mdash; World Models</span>
+        </div>
+        <span class="expand-icon">+</span>
+      </div>
+      <div class="card-body">
+        <div class="card-body-inner">
+          <div class="detail-section why">
+            <h4>Why Build This</h4>
+            <p>Transaction data is the most honest signal. Which product categories are growing? Which LMN denial patterns indicate missing eligible categories? What merchant verticals should we target next? The data already exists &mdash; just needs an intelligence on top.</p>
+          </div>
+          <div class="detail-section how">
+            <h4>How to Build It</h4>
+            <p>Analytics pipeline on transaction data, LMN outcomes, merchant performance metrics. Build predictive models: next best merchant vertical, churn risk, category demand forecasting. Dashboard + proactive alerts.</p>
+          </div>
+          <div class="detail-section parallel">
+            <h4>Dorsey Parallel</h4>
+            <p>Block's Customer World Model is built from transaction flows through Cash App and Square. "Money is the most honest signal in the world" &mdash; Dorsey. Truemed's LMN + transaction data is equally honest.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+(function() {
+  const STORAGE_KEY = 'build-checklist-v1';
+  const TOTAL = 13;
+
+  function getState() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function saveState(state) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  function updateProgress() {
+    const state = getState();
+    const count = Object.values(state).filter(Boolean).length;
+    document.getElementById('completed-count').textContent = count;
+    document.getElementById('progress-fill').style.width = ((count / TOTAL) * 100) + '%';
+  }
+
+  function applyCheckStates() {
+    const state = getState();
+    document.querySelectorAll('.card[data-id]').forEach(function(card) {
+      const id = card.dataset.id;
+      const checkbox = card.querySelector('input[type="checkbox"]');
+      if (state[id]) {
+        checkbox.checked = true;
+        card.classList.add('checked');
+      } else {
+        checkbox.checked = false;
+        card.classList.remove('checked');
+      }
+    });
+    updateProgress();
+  }
+
+  window.toggleCheck = function(id) {
+    const state = getState();
+    state[id] = !state[id];
+    saveState(state);
+    applyCheckStates();
+  };
+
+  window.toggleExpand = function(headerEl) {
+    const card = headerEl.closest('.card');
+    const body = card.querySelector('.card-body');
+
+    if (card.classList.contains('expanded')) {
+      body.style.maxHeight = '0px';
+      card.classList.remove('expanded');
+    } else {
+      // Calculate the actual scroll height of the inner content
+      const inner = body.querySelector('.card-body-inner');
+      body.style.maxHeight = (inner.scrollHeight + 40) + 'px';
+      card.classList.add('expanded');
+    }
+  };
+
+  // Initialize on DOM ready
+  applyCheckStates();
+})();
+</script>
+
+</body>
+</html>
