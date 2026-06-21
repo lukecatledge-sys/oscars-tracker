@@ -1,1153 +1,862 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Luke vs. Baby Cakes — Oscar Showdown 2026</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #0a0808;
-      --panel: rgba(24, 18, 18, .92);
-      --panel-2: rgba(36, 26, 26, .95);
-      --line: rgba(222, 187, 116, .15);
-      --line-bright: rgba(222, 187, 116, .35);
-      --gold: #deb974;
-      --gold-2: #f3dfb5;
-      --gold-glow: rgba(222, 185, 116, .25);
-      --purple: #cc9bff;
-      --purple-dim: rgba(204, 155, 255, .15);
-      --green: #97efba;
-      --green-dim: rgba(151, 239, 186, .15);
-      --red: #ff8e8e;
-      --text: #f8f0e6;
-      --muted: #b8a694;
-      --shadow: 0 20px 60px rgba(0,0,0,.5);
-      --radius: 20px;
-    }
-    * { box-sizing: border-box; margin: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      color: var(--text);
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      background: var(--bg);
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 60% 50% at 20% 10%, rgba(204,155,255,.08), transparent),
-        radial-gradient(ellipse 60% 50% at 80% 10%, rgba(151,239,186,.08), transparent),
-        radial-gradient(ellipse 80% 40% at 50% 100%, rgba(222,185,116,.06), transparent);
-      pointer-events: none;
-      z-index: 0;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+<meta name="theme-color" content="#0b0b0d" />
+<title>LEAD ROLE — Movie Star Physique</title>
+<meta name="description" content="An original, gym-ready training program for the Hollywood leading-man physique: broad shoulders, lean waist, mobile & athletic." />
+<link rel="manifest" href="/manifest.webmanifest" />
+<link rel="icon" href="/icon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="/icon.svg" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Lead Role" />
+<style>
+:root{
+  --bg:#0b0b0d; --bg2:#141418; --card:#17171c; --card2:#1d1d24;
+  --line:#27272f; --txt:#f4f4f6; --mut:#9a9aa6; --mut2:#6f6f7a;
+  --gold:#d8b46a; --gold2:#b8923f; --acc:#e6c277; --ok:#5fd0a0; --bad:#e8736a;
+  --r:16px; --tap:#ffffff14;
+  --safe-t:env(safe-area-inset-top); --safe-b:env(safe-area-inset-bottom);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--txt);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;overscroll-behavior-y:none}
+body{padding-bottom:calc(76px + var(--safe-b))}
+h1,h2,h3,h4{margin:0;font-weight:800;letter-spacing:-.02em}
+p{margin:0;line-height:1.5}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+a{color:var(--acc);text-decoration:none}
+.wrap{max-width:680px;margin:0 auto;padding:0 16px}
 
-    .wrap { max-width: 900px; margin: 0 auto; padding: 16px; position: relative; z-index: 1; }
+/* Header */
+header{position:sticky;top:0;z-index:30;background:linear-gradient(180deg,#0b0b0dee,#0b0b0dcc);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line);
+  padding-top:calc(10px + var(--safe-t))}
+.hbar{display:flex;align-items:center;justify-content:space-between;height:52px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:.14em;font-size:15px}
+.brand .dot{width:9px;height:9px;border-radius:50%;background:var(--gold);box-shadow:0 0 14px var(--gold)}
+.brand b{color:var(--gold)}
+.htitle{font-size:13px;color:var(--mut);font-weight:600;letter-spacing:.02em}
 
-    /* ── HERO ── */
-    .hero {
-      text-align: center;
-      padding: 32px 20px 24px;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: -60%; left: -20%; right: -20%; bottom: 0;
-      background: radial-gradient(ellipse at center top, rgba(222,185,116,.10), transparent 70%);
-      pointer-events: none;
-    }
-    .eyebrow {
-      color: var(--gold);
-      text-transform: uppercase;
-      letter-spacing: .22em;
-      font-weight: 800;
-      font-size: 10px;
-      margin-bottom: 12px;
-      position: relative;
-    }
-    h1 {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: clamp(32px, 8vw, 56px);
-      font-weight: 900;
-      line-height: .95;
-      margin-bottom: 8px;
-      position: relative;
-    }
-    h1 .vs-text { color: var(--gold); font-size: .6em; }
-    .subtitle {
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.5;
-      max-width: 500px;
-      margin: 0 auto;
-      position: relative;
-    }
+/* Bottom nav */
+nav{position:fixed;left:0;right:0;bottom:0;z-index:40;background:#101015f2;
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--line);
+  padding-bottom:var(--safe-b)}
+.nav-in{max-width:680px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
+.nav-in button{padding:9px 0 8px;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--mut2);font-size:10px;font-weight:700;letter-spacing:.02em}
+.nav-in button.on{color:var(--gold)}
+.nav-in svg{width:23px;height:23px;stroke:currentColor;stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round}
 
-    /* ── LIVE BADGE ── */
-    .live-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 16px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      margin: 16px auto 0;
-      position: relative;
-      cursor: pointer;
-      transition: transform .15s;
-    }
-    .live-badge:hover { transform: scale(1.04); }
-    .live-badge.on { background: rgba(151,239,186,.12); color: #b8f5cf; border: 1px solid rgba(151,239,186,.25); }
-    .live-badge.warn { background: rgba(255,180,100,.12); color: #ffd4a8; border: 1px solid rgba(255,180,100,.25); }
-    .live-badge.off { background: rgba(255,255,255,.06); color: var(--muted); border: 1px solid rgba(255,255,255,.08); }
-    .pulse-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      position: relative;
-    }
-    .pulse-dot::after {
-      content: '';
-      position: absolute;
-      inset: -3px;
-      border-radius: 50%;
-      animation: pulse 2s ease-in-out infinite;
-    }
-    .live-badge.on .pulse-dot { background: #97efba; }
-    .live-badge.on .pulse-dot::after { background: rgba(151,239,186,.4); }
-    .live-badge.warn .pulse-dot { background: #ffb864; }
-    .live-badge.warn .pulse-dot::after { background: rgba(255,180,100,.3); }
-    .live-badge.off .pulse-dot { background: #6d6363; }
-    .live-badge.off .pulse-dot::after { animation: none; }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(2.2); opacity: 0; }
-    }
-    .sync-detail {
-      font-size: 11px;
-      color: var(--muted);
-      text-align: center;
-      margin-top: 6px;
-      min-height: 16px;
-    }
+/* Generic */
+.view{display:none;padding:18px 0 24px;animation:fade .25s ease}
+.view.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.card.tap{transition:transform .12s,background .15s}
+.card.tap:active{transform:scale(.985);background:var(--card2)}
+.eyebrow{font-size:11px;letter-spacing:.18em;font-weight:800;color:var(--gold);text-transform:uppercase}
+.muted{color:var(--mut)}
+.small{font-size:13px}
+.tiny{font-size:11.5px}
+.row{display:flex;align-items:center;gap:10px}
+.between{justify-content:space-between}
+.wrap-g{display:flex;flex-wrap:wrap;gap:8px}
+.tag{font-size:11px;font-weight:700;letter-spacing:.02em;color:var(--mut);background:var(--bg2);border:1px solid var(--line);padding:5px 9px;border-radius:999px}
+.tag.gold{color:var(--gold);border-color:#d8b46a44;background:#d8b46a14}
+.divider{height:1px;background:var(--line);margin:14px 0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--card2);border:1px solid var(--line);color:var(--txt);border-radius:12px;padding:12px 16px;font-weight:700;font-size:14px}
+.btn:active{background:#26262f}
+.btn.gold{background:linear-gradient(180deg,var(--acc),var(--gold2));color:#1a1408;border:none}
+.btn.full{width:100%}
+.btn.sm{padding:9px 12px;font-size:13px;border-radius:10px}
+.btn svg{width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
 
-    /* ── SCOREBOARD ── */
-    .scoreboard {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      gap: 0;
-      align-items: center;
-      margin-top: 24px;
-      padding: 20px 16px;
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-    }
-    .player { text-align: center; padding: 12px 8px; }
-    .player-name {
-      font-size: 13px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: .1em;
-      margin-bottom: 4px;
-    }
-    .player.luke .player-name { color: var(--purple); }
-    .player.bc .player-name { color: var(--green); }
-    .player-score {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: clamp(48px, 10vw, 72px);
-      font-weight: 900;
-      line-height: 1;
-      margin: 8px 0 10px;
-      transition: transform .3s cubic-bezier(.34,1.56,.64,1);
-    }
-    .player-score.bump { transform: scale(1.15); }
-    .player-detail {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.4;
-    }
-    .vs-divider {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      padding: 0 12px;
-    }
-    .vs-line {
-      width: 1px;
-      height: 28px;
-      background: linear-gradient(to bottom, transparent, var(--line-bright), transparent);
-    }
-    .vs-label {
-      color: var(--gold);
-      font-size: 11px;
-      font-weight: 900;
-      letter-spacing: .2em;
-      text-transform: uppercase;
-    }
+/* Hero */
+.hero{position:relative;border-radius:20px;overflow:hidden;border:1px solid var(--line);
+  background:radial-gradient(120% 120% at 80% -10%,#2a2418 0%,#141319 42%,#0f0f13 100%);padding:20px;margin-bottom:16px}
+.hero .eyebrow{margin-bottom:8px}
+.hero h1{font-size:26px;line-height:1.05}
+.hero h1 span{color:var(--gold)}
+.hero p{margin-top:8px;color:var(--mut);font-size:13.5px;max-width:90%}
+.streak{display:flex;gap:6px;margin-top:14px}
+.streak .d{flex:1;height:6px;border-radius:4px;background:#2a2a32}
+.streak .d.on{background:linear-gradient(90deg,var(--acc),var(--gold2))}
 
-    /* ── CHATEAU MARMONT TRACKER ── */
-    .chateau {
-      margin-top: 14px;
-      padding: 18px;
-      background: linear-gradient(135deg, rgba(222,185,116,.08), rgba(222,185,116,.02));
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      text-align: center;
-    }
-    .chateau-label {
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: .18em;
-      color: var(--gold);
-      font-weight: 800;
-      margin-bottom: 6px;
-    }
-    .chateau-title {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: clamp(20px, 4vw, 28px);
-      font-weight: 900;
-      margin-bottom: 10px;
-    }
-    .chateau-status {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
-    }
-    .chateau-status strong { color: var(--text); }
-    .martini-row {
-      display: flex;
-      justify-content: center;
-      gap: 4px;
-      margin-top: 10px;
-      font-size: 22px;
-      min-height: 30px;
-    }
+/* Today workout */
+.daypill{display:inline-flex;align-items:center;gap:8px;background:#d8b46a18;border:1px solid #d8b46a44;color:var(--gold);
+  font-weight:800;font-size:12px;letter-spacing:.06em;padding:6px 11px;border-radius:999px}
+.ex{border:1px solid var(--line);border-radius:14px;margin-bottom:10px;overflow:hidden;background:var(--card)}
+.ex-h{display:flex;align-items:center;gap:12px;padding:13px 14px}
+.ex-n{font-weight:800;font-size:15px}
+.ex-meta{font-size:12px;color:var(--mut);margin-top:2px}
+.chk{width:26px;height:26px;border-radius:8px;border:2px solid #3a3a44;flex:none;display:grid;place-items:center;transition:.15s}
+.chk.done{background:var(--ok);border-color:var(--ok)}
+.chk svg{width:15px;height:15px;stroke:#0b0b0d;stroke-width:3.2;fill:none;opacity:0;stroke-linecap:round;stroke-linejoin:round}
+.chk.done svg{opacity:1}
+.ex.done .ex-n{color:var(--mut);text-decoration:line-through;text-decoration-color:#ffffff30}
+.scheme{font-weight:800;color:var(--gold);font-size:13px}
+.ex-body{border-top:1px solid var(--line);padding:12px 14px;display:none;background:var(--bg2)}
+.ex.open .ex-body{display:block}
+.sets{display:flex;flex-direction:column;gap:7px;margin-top:4px}
+.setrow{display:grid;grid-template-columns:34px 1fr 1fr 38px;gap:8px;align-items:center}
+.setrow .lbl{font-size:12px;color:var(--mut2);font-weight:700}
+.inp{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:9px;color:var(--txt);font-size:14px;width:100%;text-align:center;font-weight:700}
+.inp::placeholder{color:var(--mut2);font-weight:500}
+.inp:focus{outline:none;border-color:var(--gold2)}
+.setdone{width:30px;height:30px;border-radius:8px;border:1.5px solid #3a3a44;display:grid;place-items:center}
+.setdone.on{background:var(--ok);border-color:var(--ok)}
+.setdone svg{width:14px;height:14px;stroke:#0b0b0d;stroke-width:3;fill:none;opacity:0}
+.setdone.on svg{opacity:1}
+.cuehint{font-size:12.5px;color:var(--mut);margin-top:10px;line-height:1.5}
 
-    /* ── PROGRESS BARS ── */
-    .progress-section {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-top: 14px;
-    }
-    .progress-card {
-      padding: 14px;
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-    }
-    .progress-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 8px;
-    }
-    .progress-label { font-weight: 800; font-size: 13px; }
-    .progress-pct { font-size: 12px; color: var(--muted); }
-    .bar {
-      height: 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.06);
-      overflow: hidden;
-    }
-    .fill {
-      height: 100%;
-      width: 0%;
-      border-radius: 999px;
-      transition: width .5s cubic-bezier(.22,1,.36,1);
-    }
-    .fill.luke { background: linear-gradient(90deg, rgba(204,155,255,.5), var(--purple)); }
-    .fill.bc { background: linear-gradient(90deg, rgba(151,239,186,.5), var(--green)); }
+/* Rest timer */
+#rest{position:fixed;left:0;right:0;bottom:calc(76px + var(--safe-b));z-index:35;transform:translateY(140%);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+#rest.up{transform:none}
+.rest-in{max-width:680px;margin:0 auto;padding:0 16px 12px}
+.rest-card{background:#1b160c;border:1px solid #d8b46a55;border-radius:16px;padding:12px 14px;display:flex;align-items:center;gap:14px;box-shadow:0 12px 40px #000a}
+.rest-time{font-size:30px;font-weight:900;font-variant-numeric:tabular-nums;color:var(--gold);min-width:84px}
+.rest-card .lab{font-size:11px;letter-spacing:.12em;color:var(--gold);font-weight:800;text-transform:uppercase}
+.rest-card .sub{font-size:12px;color:var(--mut)}
+.iconbtn{width:38px;height:38px;border-radius:10px;background:#ffffff12;display:grid;place-items:center}
+.iconbtn svg{width:18px;height:18px;stroke:var(--txt);stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
 
-    /* ── CONTROLS ── */
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 14px;
-      justify-content: center;
-    }
-    button {
-      border: none;
-      border-radius: 12px;
-      padding: 10px 16px;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform .12s, opacity .12s;
-    }
-    button:hover { transform: translateY(-1px); }
-    button:active { transform: scale(.97); }
-    .btn-gold { background: linear-gradient(135deg, var(--gold), #e8c980); color: #1a1008; }
-    .btn-ghost { background: rgba(255,255,255,.06); color: var(--text); border: 1px solid rgba(255,255,255,.08); }
-    .btn-danger { background: rgba(255,100,100,.1); color: #ffc8c8; border: 1px solid rgba(255,100,100,.15); }
+/* lists */
+.libitem{display:flex;align-items:center;gap:13px;padding:14px;border:1px solid var(--line);border-radius:14px;margin-bottom:10px;background:var(--card)}
+.libitem:active{background:var(--card2)}
+.thumb{width:46px;height:46px;border-radius:11px;flex:none;display:grid;place-items:center;background:linear-gradient(140deg,#2a2418,#161620);border:1px solid var(--line);color:var(--gold)}
+.thumb svg{width:24px;height:24px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.search{width:100%;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 14px 13px 40px;color:var(--txt);font-size:15px;margin-bottom:14px}
+.search:focus{outline:none;border-color:var(--gold2)}
+.searchwrap{position:relative}
+.searchwrap svg{position:absolute;left:13px;top:13px;width:18px;height:18px;stroke:var(--mut2);stroke-width:2;fill:none}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px;-ms-overflow-style:none;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;font-size:13px;font-weight:700;padding:8px 14px;border-radius:999px;background:var(--card);border:1px solid var(--line);color:var(--mut)}
+.chip.on{background:var(--gold);color:#1a1408;border-color:var(--gold)}
 
-    /* ── CATEGORY GRID ── */
-    .section-title {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: 22px;
-      font-weight: 900;
-      text-align: center;
-      margin: 28px 0 14px;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-    }
-    .cat {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 14px 16px;
-      transition: border-color .3s, box-shadow .3s;
-    }
-    .cat.done {
-      border-color: var(--line-bright);
-      box-shadow: 0 0 30px rgba(222,185,116,.06);
-    }
-    .cat-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-      gap: 10px;
-    }
-    .cat-title { font-weight: 900; font-size: 15px; line-height: 1.2; }
-    .cat-num {
-      min-width: 30px;
-      height: 30px;
-      border-radius: 10px;
-      display: grid;
-      place-items: center;
-      font-size: 11px;
-      font-weight: 800;
-      color: var(--gold);
-      background: rgba(222,185,116,.08);
-      flex-shrink: 0;
-    }
-    .cat-status {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 10px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: .06em;
-      margin-bottom: 10px;
-    }
-    .cat-status.pending { background: rgba(255,255,255,.04); color: var(--muted); }
-    .cat-status.decided { background: rgba(222,185,116,.1); color: var(--gold-2); }
-    .picks {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-    .pick-card {
-      border-radius: 12px;
-      padding: 10px 12px;
-      border: 1px solid rgba(255,255,255,.06);
-      background: rgba(255,255,255,.02);
-      transition: all .3s;
-    }
-    .pick-card.luke { border-color: rgba(204,155,255,.25); }
-    .pick-card.bc { border-color: rgba(151,239,186,.25); }
-    .pick-card.correct {
-      background: rgba(222,185,116,.08);
-      border-color: rgba(222,185,116,.4);
-    }
-    .pick-card.correct .pick-who { color: var(--gold); }
-    .pick-card.wrong { opacity: .5; }
-    .pick-who {
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      font-weight: 800;
-      color: var(--muted);
-      margin-bottom: 4px;
-    }
-    .pick-val { font-size: 13px; font-weight: 700; line-height: 1.3; }
-    .cat-winner {
-      font-size: 12px;
-      color: var(--gold-2);
-      font-weight: 700;
-      margin-bottom: 8px;
-      min-height: 18px;
-    }
-    .cat-winner .winner-icon { margin-right: 4px; }
-    select {
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: 10px;
-      background: var(--panel-2);
-      color: var(--text);
-      border: 1px solid rgba(255,255,255,.08);
-      outline: none;
-      font-size: 13px;
-      font-weight: 600;
-      -webkit-appearance: none;
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23b8a694' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 12px center;
-    }
-    .cat-result {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 8px;
-      line-height: 1.4;
-      min-height: 17px;
-    }
+/* Detail sheet */
+#sheet{position:fixed;inset:0;z-index:60;display:none}
+#sheet.on{display:block}
+.sheet-bg{position:absolute;inset:0;background:#000a;backdrop-filter:blur(2px)}
+.sheet-card{position:absolute;left:0;right:0;bottom:0;max-height:90vh;overflow-y:auto;
+  background:var(--bg2);border-top-left-radius:22px;border-top-right-radius:22px;border-top:1px solid var(--line);
+  padding:8px 18px calc(28px + var(--safe-b));animation:slideup .3s cubic-bezier(.2,.8,.2,1)}
+@keyframes slideup{from{transform:translateY(100%)}to{transform:none}}
+.grab{width:40px;height:5px;border-radius:3px;background:#3a3a44;margin:8px auto 14px}
+.sheet-hero{height:150px;border-radius:16px;background:radial-gradient(120% 120% at 70% 0%,#2a2418,#161620);
+  border:1px solid var(--line);display:grid;place-items:center;margin-bottom:16px;position:relative;overflow:hidden}
+.sheet-hero svg.fig{width:96px;height:96px;stroke:var(--gold);stroke-width:1.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.musclebar{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.mb{font-size:11px;font-weight:700;padding:5px 10px;border-radius:8px;background:#d8b46a14;color:var(--gold);border:1px solid #d8b46a33}
+.steps{counter-reset:s;margin:8px 0 0;padding:0;list-style:none}
+.steps li{position:relative;padding:0 0 12px 34px;color:var(--txt);font-size:14px;line-height:1.5}
+.steps li::before{counter-increment:s;content:counter(s);position:absolute;left:0;top:-1px;width:24px;height:24px;border-radius:7px;
+  background:var(--gold);color:#1a1408;font-weight:900;font-size:12px;display:grid;place-items:center}
+.cuelist{margin:6px 0 0;padding:0;list-style:none}
+.cuelist li{padding:7px 0 7px 24px;position:relative;font-size:13.5px;color:var(--mut);border-bottom:1px solid var(--line)}
+.cuelist li:last-child{border-bottom:none}
+.cuelist li::before{content:"";position:absolute;left:4px;top:13px;width:7px;height:7px;border-radius:50%;background:var(--gold)}
+.cuelist.bad li::before{background:var(--bad);border-radius:2px}
+.sec-h{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut2);font-weight:800;margin:20px 0 8px}
 
-    /* ── FOOTER ── */
-    .footer {
-      text-align: center;
-      color: var(--muted);
-      font-size: 11px;
-      padding: 24px 16px 16px;
-      line-height: 1.5;
-    }
+/* nutrition calc */
+.calc-row{display:flex;gap:10px;margin-bottom:10px}
+.calc-row label{flex:1}
+.calc-row .lab{font-size:12px;color:var(--mut);font-weight:700;display:block;margin-bottom:5px}
+.stat{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center}
+.stat b{display:block;font-size:24px;color:var(--gold)}
+.stat span{font-size:11px;color:var(--mut);letter-spacing:.04em}
+.statgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:4px;gap:4px;margin-bottom:14px}
+.seg button{flex:1;padding:9px;border-radius:8px;font-weight:700;font-size:13px;color:var(--mut)}
+.seg button.on{background:var(--gold);color:#1a1408}
 
-    /* ── TOAST ── */
-    .toast {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: rgba(24,18,18,.96);
-      border: 1px solid var(--line-bright);
-      border-radius: 14px;
-      padding: 12px 18px;
-      font-size: 13px;
-      font-weight: 700;
-      box-shadow: 0 16px 48px rgba(0,0,0,.6);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .25s, transform .25s;
-      z-index: 100;
-      max-width: 340px;
-      text-align: center;
-    }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+.daynav{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:14px;-ms-overflow-style:none;scrollbar-width:none}
+.daynav::-webkit-scrollbar{display:none}
+.daybtn{flex:none;min-width:62px;text-align:center;padding:10px 8px;border-radius:12px;background:var(--card);border:1px solid var(--line)}
+.daybtn .dn{font-size:10px;color:var(--mut2);font-weight:700;letter-spacing:.08em}
+.daybtn .dl{font-size:13px;font-weight:800;margin-top:3px}
+.daybtn.on{background:#d8b46a18;border-color:#d8b46a55}
+.daybtn.on .dl{color:var(--gold)}
+.daybtn.rest .dl{color:var(--mut2)}
 
-    /* ── CONFETTI CANVAS ── */
-    #confetti {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 99;
-    }
-
-    /* ── RESPONSIVE ── */
-    @media (max-width: 600px) {
-      .wrap { padding: 10px; }
-      .scoreboard { padding: 16px 10px; }
-      .progress-section { grid-template-columns: 1fr; }
-      .picks { grid-template-columns: 1fr; }
-      .controls { flex-direction: column; }
-      .controls button { width: 100%; }
-    }
-  </style>
+.note{background:#1a160c;border:1px solid #d8b46a33;border-radius:12px;padding:12px 14px;font-size:13px;color:#e8d6ad;line-height:1.5}
+.foot{text-align:center;color:var(--mut2);font-size:11px;padding:24px 0 8px;line-height:1.6}
+.kpi{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+.toast{position:fixed;left:50%;bottom:calc(90px + var(--safe-b));transform:translateX(-50%) translateY(20px);
+  background:#26262f;border:1px solid var(--line);color:var(--txt);padding:11px 18px;border-radius:999px;font-size:13px;font-weight:700;
+  opacity:0;transition:.25s;z-index:80;pointer-events:none}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.progress-ring{transform:rotate(-90deg)}
+</style>
 </head>
 <body>
-  <canvas id="confetti"></canvas>
 
-  <div class="wrap">
-    <!-- HERO -->
-    <section class="hero">
-      <div class="eyebrow">Chateau Marmont Martini Extravaganza Cup</div>
-      <h1>Luke <span class="vs-text">vs.</span> Baby Cakes</h1>
-      <div class="subtitle">Oscar night showdown. Loser buys martinis at the Chateau. Every category counts.</div>
+<header>
+  <div class="wrap hbar">
+    <div class="brand"><span class="dot"></span>LEAD&nbsp;<b>ROLE</b></div>
+    <div class="htitle" id="htitle">Today</div>
+  </div>
+</header>
 
-      <div id="live-badge" class="live-badge off" onclick="syncLive(true)">
-        <span class="pulse-dot"></span>
-        <span id="live-label">Connecting...</span>
+<main class="wrap">
+  <section class="view on" id="v-today"></section>
+  <section class="view" id="v-program"></section>
+  <section class="view" id="v-library"></section>
+  <section class="view" id="v-mobility"></section>
+  <section class="view" id="v-fuel"></section>
+</main>
+
+<!-- Rest timer -->
+<div id="rest">
+  <div class="rest-in">
+    <div class="rest-card">
+      <div class="rest-time" id="restTime">2:00</div>
+      <div style="flex:1">
+        <div class="lab">Rest</div>
+        <div class="sub" id="restSub">Heavy set — recover fully</div>
       </div>
-      <div id="sync-detail" class="sync-detail"></div>
-    </section>
-
-    <!-- SCOREBOARD -->
-    <section class="scoreboard">
-      <div class="player luke">
-        <div class="player-name">Luke</div>
-        <div id="score-luke" class="player-score">0</div>
-        <div class="player-detail"><span id="remaining-luke">24</span> categories left</div>
-      </div>
-      <div class="vs-divider">
-        <div class="vs-line"></div>
-        <div class="vs-label">vs</div>
-        <div class="vs-line"></div>
-      </div>
-      <div class="player bc">
-        <div class="player-name">Baby Cakes</div>
-        <div id="score-bc" class="player-score">0</div>
-        <div class="player-detail"><span id="remaining-bc">24</span> categories left</div>
-      </div>
-    </section>
-
-    <!-- CHATEAU TRACKER -->
-    <section class="chateau">
-      <div class="chateau-label">Martini Debt Tracker</div>
-      <div class="chateau-title">Chateau Marmont</div>
-      <div id="chateau-status" class="chateau-status">No one is ahead yet. The martini bill is floating in the air.</div>
-      <div id="martini-row" class="martini-row"></div>
-    </section>
-
-    <!-- PROGRESS -->
-    <section class="progress-section">
-      <div class="progress-card">
-        <div class="progress-top">
-          <div class="progress-label" style="color:var(--purple)">Luke</div>
-          <div id="pct-luke" class="progress-pct">0%</div>
-        </div>
-        <div class="bar"><div id="fill-luke" class="fill luke"></div></div>
-      </div>
-      <div class="progress-card">
-        <div class="progress-top">
-          <div class="progress-label" style="color:var(--green)">Baby Cakes</div>
-          <div id="pct-bc" class="progress-pct">0%</div>
-        </div>
-        <div class="bar"><div id="fill-bc" class="fill bc"></div></div>
-      </div>
-    </section>
-
-    <!-- CONTROLS -->
-    <section class="controls">
-      <button id="btn-share" class="btn-gold" onclick="shareLink()">Share Tracker</button>
-      <button class="btn-ghost" onclick="syncLive(true)">Refresh Results</button>
-      <button class="btn-ghost" onclick="copyStandings()">Copy Standings</button>
-      <button class="btn-danger" onclick="clearManual()">Clear Overrides</button>
-    </section>
-
-    <!-- CATEGORIES -->
-    <div class="section-title">All 24 Categories</div>
-    <section id="grid" class="grid"></section>
-
-    <div class="footer">
-      Built for one night of Oscar chaos and old Hollywood cocktail stakes.<br>
-      Scores update live every 30 seconds from multiple sources.
+      <button class="iconbtn" id="restMinus"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></button>
+      <button class="iconbtn" id="restPlus"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+      <button class="iconbtn" id="restStop"><svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></svg></button>
     </div>
   </div>
+</div>
 
-  <div id="toast" class="toast"></div>
+<!-- Exercise detail sheet -->
+<div id="sheet">
+  <div class="sheet-bg" id="sheetBg"></div>
+  <div class="sheet-card" id="sheetCard"></div>
+</div>
 
-  <script>
-    /* ═══════════════════════════════════════════════
-       DATA
-    ═══════════════════════════════════════════════ */
-    const categories = [
-      { id:'best-picture', title:'Best Picture', luke:'One Battle After Another', gf:'One Battle After Another', nominees:['Bugonia','F1','Frankenstein','Hamnet','Marty Supreme','One Battle After Another','The Secret Agent','Sentimental Value','Sinners','Train Dreams'], headings:['best picture'] },
-      { id:'best-director', title:'Best Director', luke:'Paul Thomas Anderson - One Battle After Another', gf:'Ryan Coogler - Sinners', nominees:['Paul Thomas Anderson - One Battle After Another','Ryan Coogler - Sinners','Josh Safdie - Marty Supreme','Joachim Trier - Sentimental Value','Chloé Zhao - Hamnet'], headings:['directing','best director','best directing'] },
-      { id:'best-actress', title:'Best Actress', luke:'Emma Stone - Bugonia', gf:'Renate Reinsve - Sentimental Value', nominees:['Jessie Buckley - Hamnet','Rose Byrne - If I Had Legs I\'d Kick You','Kate Hudson - Song Sung Blue','Renate Reinsve - Sentimental Value','Emma Stone - Bugonia'], headings:['actress in a leading role','best actress','lead actress'] },
-      { id:'best-actor', title:'Best Actor', luke:'Timothée Chalamet - Marty Supreme', gf:'Michael B. Jordan - Sinners', nominees:['Timothée Chalamet - Marty Supreme','Leonardo DiCaprio - One Battle After Another','Ethan Hawke - Blue Moon','Michael B. Jordan - Sinners','Wagner Moura - The Secret Agent'], headings:['actor in a leading role','best actor','lead actor'] },
-      { id:'best-supporting-actor', title:'Best Supporting Actor', luke:'Jacob Elordi - Frankenstein', gf:'Delroy Lindo - Sinners', nominees:['Benicio Del Toro - One Battle After Another','Jacob Elordi - Frankenstein','Delroy Lindo - Sinners','Sean Penn - One Battle After Another','Stellan Skarsgård - Sentimental Value'], headings:['actor in a supporting role','best supporting actor','supporting actor'] },
-      { id:'best-supporting-actress', title:'Best Supporting Actress', luke:'Teyana Taylor - One Battle After Another', gf:'Amy Madigan - Weapons', nominees:['Elle Fanning - Sentimental Value','Inga Ibsdotter Lilleaas - Sentimental Value','Amy Madigan - Weapons','Wunmi Mosaku - Sinners','Teyana Taylor - One Battle After Another'], headings:['actress in a supporting role','best supporting actress','supporting actress'] },
-      { id:'best-adapted-screenplay', title:'Best Adapted Screenplay', luke:'One Battle After Another - Paul Thomas Anderson', gf:'Train Dreams - Clint Bentley and Greg Kwedar', nominees:['Bugonia - Will Tracy','Frankenstein - Guillermo del Toro','Hamnet - Chloé Zhao and Maggie O\'Farrell','One Battle After Another - Paul Thomas Anderson','Train Dreams - Clint Bentley and Greg Kwedar'], headings:['adapted screenplay','writing adapted','best adapted screenplay'] },
-      { id:'best-original-screenplay', title:'Best Original Screenplay', luke:'Marty Supreme', gf:'Marty Supreme', nominees:['Blue Moon','It Was Just an Accident','Marty Supreme','Sentimental Value','Sinners'], headings:['original screenplay','writing original','best original screenplay'] },
-      { id:'best-international-feature', title:'Best International Feature', luke:'The Voice of Hind Rajab - Tunisia', gf:'Sentimental Value - Norway', nominees:['The Secret Agent - Brazil','It Was Just an Accident - France','Sentimental Value - Norway','Sirât - Spain','The Voice of Hind Rajab - Tunisia'], headings:['international feature','best international'] },
-      { id:'best-documentary-feature', title:'Best Documentary Feature', luke:'Mr. Nobody Against Putin', gf:'Come See Me in the Good Light', nominees:['The Alabama Solution','Come See Me in the Good Light','Cutting Through Rocks','Mr. Nobody Against Putin','The Perfect Neighbor'], headings:['documentary feature','best documentary feature'] },
-      { id:'best-animated-feature', title:'Best Animated Feature', luke:'KPop Demon Hunters', gf:'KPop Demon Hunters', nominees:['Arco','Elio','KPop Demon Hunters','Little Amélie or the Character of Rain','Zootopia 2'], headings:['animated feature','best animated feature'] },
-      { id:'best-cinematography', title:'Best Cinematography', luke:'Frankenstein - Dan Laustsen', gf:'Marty Supreme - Darius Khondji', nominees:['Frankenstein - Dan Laustsen','Marty Supreme - Darius Khondji','One Battle After Another - Michael Bauman','Sinners - Autumn Durald Arkapaw','Train Dreams - Adolpho Veloso'], headings:['cinematography','best cinematography'] },
-      { id:'best-editing', title:'Best Film Editing', luke:'F1 - Stephen Mirrione', gf:'F1 - Stephen Mirrione', nominees:['F1 - Stephen Mirrione','Marty Supreme - Ronald Bronstein and Josh Safdie','One Battle After Another - Andy Jurgensen','Sentimental Value - Olivier Bugge Coutté','Sinners - Michael P. Shawver'], headings:['film editing','best editing','best film editing'] },
-      { id:'best-original-song', title:'Best Original Song', luke:'Golden - KPop Demon Hunters', gf:'Golden - KPop Demon Hunters', nominees:['Dear Me - Diane Warren: Relentless','Golden - KPop Demon Hunters','I Lied to You - Sinners','Sweet Dreams of Joy - Viva Verdi!','Train Dreams - Train Dreams'], headings:['original song','music original song','best original song'] },
-      { id:'best-costume-design', title:'Best Costume Design', luke:'Frankenstein - Kate Hawley', gf:'Sinners - Ruth E. Carter', nominees:['Avatar: Fire and Ash - Deborah L. Scott','Frankenstein - Kate Hawley','Hamnet - Malgosia Turzanska','Marty Supreme - Miyako Bellizzi','Sinners - Ruth E. Carter'], headings:['costume design','best costume'] },
-      { id:'best-casting', title:'Best Casting', luke:'Marty Supreme - Jennifer Venditti', gf:'Sinners - Francine Maisler', nominees:['Hamnet - Nina Gold','Marty Supreme - Jennifer Venditti','One Battle After Another - Cassandra Kulukundis','The Secret Agent - Gabriel Domingues','Sinners - Francine Maisler'], headings:['casting','best casting'] },
-      { id:'best-original-score', title:'Best Original Score', luke:'Frankenstein - Alexandre Desplat', gf:'Sinners - Ludwig Göransson', nominees:['Bugonia - Jerskin Fendrix','Frankenstein - Alexandre Desplat','Hamnet - Max Richter','One Battle After Another - Jonny Greenwood','Sinners - Ludwig Göransson'], headings:['original score','music original score','best original score','best score'] },
-      { id:'best-makeup-and-hairstyling', title:'Best Makeup & Hairstyling', luke:'Frankenstein', gf:'Frankenstein', nominees:['Frankenstein','Kokuho','Sinners','The Smashing Machine','The Ugly Stepsister'], headings:['makeup and hairstyling','makeup','best makeup'] },
-      { id:'best-production-design', title:'Best Production Design', luke:'Frankenstein', gf:'Frankenstein', nominees:['Frankenstein','Hamnet','Marty Supreme','One Battle After Another','Sinners'], headings:['production design','best production design'] },
-      { id:'best-visual-effects', title:'Best Visual Effects', luke:'F1', gf:'Avatar: Fire and Ash', nominees:['Avatar: Fire and Ash','F1','Jurassic World Rebirth','The Lost Bus','Sinners'], headings:['visual effects','best visual effects'] },
-      { id:'best-sound', title:'Best Sound', luke:'F1', gf:'F1', nominees:['F1','Frankenstein','One Battle After Another','Sinners','Sirât'], headings:['sound','best sound'] },
-      { id:'best-live-action-short', title:'Best Live-Action Short', luke:'Jane Austen\'s Period Drama', gf:'Butcher\'s Stain', nominees:['Butcher\'s Stain','A Friend of Dorothy','Jane Austen\'s Period Drama','The Singers','Two People Exchanging Saliva'], headings:['live action short','short film live action','best live action short'] },
-      { id:'best-animated-short', title:'Best Animated Short', luke:'Forevergreen', gf:'The Girl Who Cried Pearls', nominees:['Butterfly','Forevergreen','The Girl Who Cried Pearls','Retirement Plan','The Three Sisters'], headings:['animated short','short film animated','best animated short'] },
-      { id:'best-documentary-short', title:'Best Documentary Short', luke:'Perfectly a Strangeness', gf:'All the Empty Rooms', nominees:['All the Empty Rooms','Armed Only With a Camera: The Life and Death of Brent Renaud','Children No More: Were and Are Gone','The Devil Is Busy','Perfectly a Strangeness'], headings:['documentary short','short film documentary','best documentary short'] }
-    ];
+<div class="toast" id="toast"></div>
 
-    /* ═══════════════════════════════════════════════
-       LIVE SOURCES — multiple sources + proxies
-    ═══════════════════════════════════════════════ */
-    const WIKI_ARTICLE = '98th Academy Awards';
-    const CORS_PROXIES = [
-      url => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url),
-      url => 'https://corsproxy.io/?' + encodeURIComponent(url),
-      url => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(url),
-    ];
+<!-- Bottom nav -->
+<nav>
+  <div class="nav-in">
+    <button data-v="today" class="on">
+      <svg viewBox="0 0 24 24"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg>Today</button>
+    <button data-v="program">
+      <svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Program</button>
+    <button data-v="library">
+      <svg viewBox="0 0 24 24"><path d="M6.5 4h11a1 1 0 011 1v15l-6.5-3-6.5 3V5a1 1 0 011-1z"/></svg>Moves</button>
+    <button data-v="mobility">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><path d="M12 8v6m0 0l-4 6m4-6l4 6M7 11h10"/></svg>Mobility</button>
+    <button data-v="fuel">
+      <svg viewBox="0 0 24 24"><path d="M5 3v7a3 3 0 003 3v8M8 3v6M19 3c-1.5 1-2.5 3-2.5 6V13c0 1 .8 1 1.5 1v7"/></svg>Fuel</button>
+  </div>
+</nav>
 
-    const NEWS_SOURCES = [
-      'https://www.latimes.com/entertainment-arts/awards/story/2026-03-15/oscars-2026-winners-list-full-results',
-      'https://deadline.com/feature/oscar-winners-2026-complete-list-1236123456/',
-      'https://variety.com/lists/2026-oscar-winners-complete-list/',
-    ];
+<script>
+/* ============================================================
+   LEAD ROLE — Movie Star Physique
+   Original program built on standard, non-proprietary
+   strength-training principles (V-taper aesthetics, reverse
+   pyramid training, lean nutrition, mobility).
+   ============================================================ */
 
-    /* ═══════════════════════════════════════════════
-       STATE
-    ═══════════════════════════════════════════════ */
-    const STORE_LIVE = 'oscar26-live-v6';
-    const STORE_MANUAL = 'oscar26-manual-v6';
-    let liveWinners = loadJSON(STORE_LIVE, {});
-    let manualOverrides = loadJSON(STORE_MANUAL, {});
-    let syncStatus = { state: 'off', source: '', time: null, error: '' };
-    let prevScores = { luke: 0, bc: 0 };
+/* ---------- generic figure glyphs ---------- */
+const FIG = {
+  press:'<path d="M12 3a2 2 0 100 4 2 2 0 000-4z"/><path d="M12 7v7m0 0l-3 7m3-7l3 7"/><path d="M6 6l6 3 6-3"/><path d="M3 6h3M18 6h3"/>',
+  pull:'<path d="M12 3a2 2 0 100 4 2 2 0 000-4z"/><path d="M5 5h14"/><path d="M9 5l3 6 3-6M12 11v4m0 0l-2 6m2-6l2 6"/>',
+  legs:'<path d="M12 3a2 2 0 100 4 2 2 0 000-4z"/><path d="M12 7v6l-4 8M12 13l4 8M8 10h8"/>',
+  core:'<path d="M12 3a2 2 0 100 4 2 2 0 000-4z"/><path d="M12 7v5M8 9c1.5 1.5 6.5 1.5 8 0M9 12l-2 9M15 12l2 9"/>',
+  shoulder:'<path d="M12 3a2 2 0 100 4 2 2 0 000-4z"/><path d="M5 9l7-2 7 2M12 7v8M9 21l3-6 3 6"/>',
+  mobility:'<path d="M12 3a2 2 0 100 4 2 2 0 000-4z"/><circle cx="12" cy="13" r="3"/><path d="M4 13h5M15 13h5M12 7v3"/>'
+};
 
-    function loadJSON(k, fb) {
-      try { const d = JSON.parse(localStorage.getItem(k)); return d && typeof d === 'object' ? d : fb; }
-      catch { return fb; }
+/* ---------- EXERCISE LIBRARY ---------- */
+const EX = {
+  ohp:{name:"Standing Overhead Press",group:"shoulder",equip:"Barbell",icon:"press",
+    muscles:["Front/side delts","Triceps","Upper chest","Core"],
+    why:"The #1 builder of the round, capped shoulders that create the broad-on-top silhouette. Pressing overhead from the floor also forces full-body tension and bracing.",
+    steps:["Set the bar at collarbone height in the rack. Grip just outside shoulder width, elbows slightly in front of the bar.","Unrack, take one step back, brace your abs and squeeze your glutes — ribs down, not flared.","Tuck your chin back slightly and press the bar straight up in a vertical line past your face.","Once the bar clears your forehead, push your head 'through' so the bar finishes stacked over the mid-foot.","Lower under control back to the collarbone. Re-brace each rep."],
+    cues:["Squeeze glutes hard — it stops you leaning back and turning it into an incline press.","Wrists stacked over elbows, over the bar. No bent-back wrists.","Full lockout overhead with biceps near the ears."],
+    faults:["Leaning back / pressing the bar forward instead of up.","Flaring the ribcage — kills the core brace and stresses the lower back.","Half-locking out — you lose the top-end delt and triceps work."]},
+
+  inclinebp:{name:"Incline Barbell/DB Press",group:"shoulder",equip:"Barbell or DB",icon:"press",
+    muscles:["Upper chest","Front delts","Triceps"],
+    why:"Upper-chest fullness is what makes the chest look like 'armor' under a shirt. The incline angle builds the shelf without overdeveloping the lower chest.",
+    steps:["Set the bench to 30° (low incline — higher turns it into a shoulder press).","Plant feet, slight arch, shoulder blades pulled back and down into the bench.","Lower the bar/dumbbells to the upper chest, elbows tucked ~45° from the body.","Drive up and slightly back so the weight finishes over the upper chest, not the face.","Control the descent — 2 seconds down."],
+    cues:["Shoulder blades pinched the whole set — protects the shoulder and isolates the chest.","Touch the upper chest, not the throat.","Think 'press the body away from the bar.'"],
+    faults:["Bench too steep — turns into a front-delt exercise.","Elbows flared to 90° — shoulder strain.","Bouncing the bar off the chest."]},
+
+  latraise:{name:"Lateral Raise",group:"shoulder",equip:"Dumbbells / Cable",icon:"shoulder",
+    muscles:["Side delts"],
+    why:"The single most important move for width. Side-delt growth widens your frame and shrinks the waist by comparison — the core of the V-taper illusion.",
+    steps:["Hold dumbbells at your sides, slight bend in the elbows held constant.","Lean forward ~10° to bias the side delt. Tilt the pinky slightly up ('pouring water').","Raise out to the sides until the wrists reach shoulder height — no higher.","Lead with the elbows, not the hands.","Lower slowly over 2–3 seconds. No swinging."],
+    cues:["Light weight, perfect form — ego has no place here.","Pause for a beat at the top.","Imagine pushing the weights away from your body, not just up."],
+    faults:["Using momentum / shrugging the traps up.","Going too heavy and turning it into an upright row.","Raising above shoulder height (traps take over)."]},
+
+  pullup:{name:"Weighted Pull-Up / Chin-Up",group:"pull",equip:"Bar + belt",icon:"pull",
+    muscles:["Lats","Upper back","Biceps"],
+    why:"Builds the wide lats that taper down to the waist — the back half of the V. Weighted progression is what separates a strong-looking back from a flat one.",
+    steps:["Grip the bar slightly wider than shoulders (pull-up) or shoulder-width underhand (chin-up).","Start from a dead hang, then pull the shoulder blades down and back first.","Drive the elbows down toward your hips and pull your chest to the bar.","Pause at the top with the collarbone near the bar.","Lower all the way to a full hang under control."],
+    cues:["Lead with the chest, not the chin.","Think 'elbows to back pockets' to fire the lats.","Once you hit 8 clean reps, add weight with a dip belt."],
+    faults:["Half reps / not reaching a full dead hang.","Kipping and swinging for momentum.","Shrugging up instead of pulling the shoulders down."]},
+
+  row:{name:"Barbell / Cable Row",group:"pull",equip:"Barbell or Cable",icon:"pull",
+    muscles:["Mid-back","Lats","Rear delts","Biceps"],
+    why:"Adds thickness and detail to the back and pulls the shoulders back for better posture — a big part of looking 'put together'.",
+    steps:["Hinge at the hips to ~45°, flat back, soft knees (barbell) or sit tall (cable).","Let the weight hang/extend with shoulders slightly protracted.","Pull toward the lower ribs / belly button, driving the elbows back.","Squeeze the shoulder blades together at the top for a beat.","Lower under full control to a stretch."],
+    cues:["Pull to the waist, not the chest, to bias the lats and mid-back.","Keep the torso angle fixed — no jerking upright.","Squeeze, don't yank."],
+    faults:["Using the lower back to heave the weight up.","Rounding the spine.","Short, partial reps with no stretch."]},
+
+  facepull:{name:"Face Pull",group:"pull",equip:"Cable + rope",icon:"pull",
+    muscles:["Rear delts","Rotator cuff","Traps"],
+    why:"Rear-delt and upper-back work that bulletproofs the shoulders and fixes rounded posture from too much pressing. Healthy shoulders = more pressing = bigger delts.",
+    steps:["Set a rope at upper-chest/face height. Grab with thumbs pointing back.","Step back to tension, arms straight, shoulders relaxed.","Pull the rope toward your eyes, splitting the ends apart.","Finish with knuckles by your ears and elbows high.","Slowly return to the stretch."],
+    cues:["High elbows throughout.","Think 'make a double-biceps pose' at the end.","Pure control — never ego-load this."],
+    faults:["Pulling low to the chest (turns into a row).","Leaning back and using bodyweight.","Going too heavy and losing the external rotation."]},
+
+  curl:{name:"Incline Dumbbell Curl",group:"pull",equip:"Dumbbells",icon:"pull",
+    muscles:["Biceps (long head)","Forearms"],
+    why:"The arms that fill a sleeve. The incline position stretches the long head of the biceps for the peak that reads on camera.",
+    steps:["Set a bench to ~60°. Sit back with arms hanging straight down behind the torso.","Keep the upper arms still — this stretch position is the whole point.","Curl up, supinating (rotate pinky toward you) as you rise.","Squeeze hard at the top.","Lower all the way to a full stretch — 3 seconds down."],
+    cues:["Don't let the elbows drift forward.","Control the negative — that's where growth happens.","Full stretch at the bottom every rep."],
+    faults:["Swinging the elbows forward to cheat.","Half reps at the top.","Dropping the weight fast and skipping the stretch."]},
+
+  dip:{name:"Weighted Dip",group:"shoulder",equip:"Dip bars + belt",icon:"press",
+    muscles:["Lower/outer chest","Triceps","Front delts"],
+    why:"A heavy compound that adds chest and triceps size fast. The slight forward lean rounds out the chest beneath the upper-chest shelf.",
+    steps:["Mount the bars, arms locked, chest up, slight forward lean for chest emphasis.","Lower until the upper arms are roughly parallel to the floor.","Keep the elbows tracking back, not flared wide.","Press back up to a strong lockout, squeezing the chest/triceps.","Add weight via a belt once 8–10 clean reps are easy."],
+    cues:["Lean forward = more chest; stay upright = more triceps.","Don't sink below a comfortable shoulder stretch.","Controlled, no bouncing at the bottom."],
+    faults:["Going too deep and straining the front of the shoulder.","Flaring elbows wide.","Half reps to chase weight."]},
+
+  pushdown:{name:"Triceps Rope Pushdown",group:"pull",equip:"Cable + rope",icon:"pull",
+    muscles:["Triceps"],
+    why:"Isolation that adds the horseshoe detail to the back of the arm — most of arm size is triceps, not biceps.",
+    steps:["Set rope at the top. Tuck the elbows to your sides and pin them there.","Push down and spread the rope ends apart at the bottom.","Fully lock out and squeeze the triceps.","Control the rope back up to ~90° at the elbow.","Keep the torso upright and still."],
+    cues:["Elbows glued to your ribs the whole time.","Spread the rope at the bottom for the full contraction.","Slow negatives."],
+    faults:["Elbows drifting forward / flaring.","Leaning over the weight to push it down.","Using the shoulders instead of the triceps."]},
+
+  squat:{name:"Back / Goblet Squat",group:"legs",equip:"Barbell or DB",icon:"legs",
+    muscles:["Quads","Glutes","Core"],
+    why:"Legs round out the physique and drive the hormonal response that helps the whole body grow. We train them hard but with controlled volume so they stay athletic, not blocky.",
+    steps:["Bar on the upper traps (or hold a DB at the chest). Feet shoulder-width, toes slightly out.","Brace the core, break at the hips and knees together.","Descend until thighs are at least parallel, knees tracking over the toes.","Drive through the mid-foot to stand, squeezing the glutes at the top.","Keep the chest up and spine neutral throughout."],
+    cues:["Knees out, in line with the toes.","Brace as if about to be punched in the gut.","Full depth beats heavy half-reps."],
+    faults:["Knees caving inward.","Rounding the lower back at the bottom.","Rising hips first / good-morning-ing the weight up."]},
+
+  rdl:{name:"Romanian Deadlift",group:"legs",equip:"Barbell or DB",icon:"legs",
+    muscles:["Hamstrings","Glutes","Lower back"],
+    why:"Builds the hamstrings and glutes that complete the lower body from the side and back, and reinforces a strong hip hinge for everyday athleticism.",
+    steps:["Stand tall holding the bar at the hips, soft knees.","Push the hips straight back, sliding the bar down the thighs.","Lower until you feel a strong hamstring stretch (around mid-shin), back flat.","Keep the bar close to the legs the entire time.","Drive the hips forward to stand, squeezing the glutes at the top."],
+    cues:["It's a hinge, not a squat — hips back, minimal knee bend.","Flat back, chest proud throughout.","Feel the stretch in the hamstrings, not the lower back."],
+    faults:["Rounding the back.","Turning it into a squat by bending the knees too much.","Letting the bar drift away from the body."]},
+
+  splitsquat:{name:"Bulgarian Split Squat",group:"legs",equip:"Dumbbells",icon:"legs",
+    muscles:["Quads","Glutes","Balance"],
+    why:"Single-leg work builds balanced, athletic legs and strong glutes while sparing the lower back — great for the lean, capable look.",
+    steps:["Place the top of the rear foot on a bench behind you.","Hold dumbbells at your sides, torso tall.","Lower straight down until the front thigh is about parallel.","Keep the front knee tracking over the foot.","Drive through the front heel to stand. Finish all reps, then switch sides."],
+    cues:["Most of the weight on the front leg.","Slight forward lean targets glutes; upright targets quads.","Control the descent — no bouncing off the bottom."],
+    faults:["Front knee caving in.","Pushing off the back foot.","Too short a stance, crowding the front knee."]},
+
+  calf:{name:"Standing Calf Raise",group:"legs",equip:"Machine or DB",icon:"legs",
+    muscles:["Calves"],
+    why:"Defined calves finish the legs and are visible year-round in shorts. They respond to a full stretch and a hard squeeze.",
+    steps:["Balls of the feet on a step/plate, heels hanging off.","Drop the heels for a deep stretch at the bottom.","Press up onto the toes as high as possible.","Squeeze hard at the top for a full second.","Lower slowly all the way down."],
+    cues:["Full range — deep stretch, high squeeze.","Pause at top and bottom.","Slow and controlled; calves shrug off momentum reps."],
+    faults:["Tiny bouncy reps with no range.","Rushing the negative.","Bending the knees to bounce the weight."]},
+
+  legraise:{name:"Hanging Leg Raise",group:"core",equip:"Pull-up bar",icon:"core",
+    muscles:["Lower abs","Hip flexors","Grip"],
+    why:"Direct lower-ab work that builds the visible six-pack while keeping the waist tight rather than thick — important for the tapered look.",
+    steps:["Hang from the bar, shoulders active (slightly pulled down).","Brace the core and posteriorly tilt the pelvis to start.","Raise the legs until the thighs pass parallel (knees bent to scale).","Control the lift — no swinging.","Lower slowly to the dead hang."],
+    cues:["Curl the pelvis up, don't just lift the legs.","Slow on the way down.","Bend the knees if straight legs cause swinging."],
+    faults:["Swinging / using momentum.","Only moving from the hips (hip flexors do all the work).","Dropping the legs fast."]},
+
+  abwheel:{name:"Ab Wheel Rollout",group:"core",equip:"Ab wheel",icon:"core",
+    muscles:["Full core","Lats","Shoulders"],
+    why:"Builds true core strength and a flat, dense midsection that holds you tall — the anti-bloat, tight-waist exercise.",
+    steps:["Kneel, grip the wheel under the shoulders, brace hard.","Tuck the pelvis and roll forward slowly, keeping a hollow body.","Go only as far as you can hold a flat (non-arched) back.","Pull through the abs and lats to return.","Keep tension the entire range — never let the lower back sag."],
+    cues:["Ribs down, glutes squeezed — resist the arch.","Short range first; extend as you get stronger.","Move slowly and own every inch."],
+    faults:["Letting the lower back sag/arch (back pain risk).","Rolling out too far too soon.","Pulling with the hips instead of the abs."]},
+
+  plank:{name:"Hardstyle Plank",group:"core",equip:"None",icon:"core",
+    muscles:["Deep core","Glutes"],
+    why:"Teaches the full-body bracing that protects your spine on every heavy lift and keeps the midsection tight under load.",
+    steps:["Forearms under the shoulders, body in a straight line.","Squeeze the glutes and quads hard.","Brace the abs as if bracing for a punch.","Pull the elbows 'toward your toes' to ramp up tension.","Hold 10–20s of maximal tension rather than long easy holds."],
+    cues:["Maximal tension, not maximal time.","Flat back — no sagging hips or piked butt.","Breathe shallow behind a tight brace."],
+    faults:["Sagging hips.","Holding limp for minutes (low tension).","Letting the head drop."]}
+};
+
+/* ---------- PROGRAM ---------- */
+const REST = {heavy:"3:00", mid:"2:00", light:"1:30"};
+
+const PROGRAM = {
+  found:{
+    name:"Phase 1 · Foundation",
+    weeks:"Weeks 1–8",
+    days:["3 days / week","Full recovery between sessions","Build the strength base"],
+    blurb:"Three full-body-leaning sessions that prioritize the shoulders, upper chest and back. Reverse-pyramid the big lifts: warm up, then your heaviest set first, dropping ~10% weight and adding reps each set after.",
+    schedule:[
+      {d:"A — Push",ex:[
+        {ex:"ohp",scheme:"RPT · 5 / 6 / 8",rest:REST.heavy,note:"Top set heavy. Drop ~10% each set."},
+        {ex:"inclinebp",scheme:"RPT · 6 / 8 / 10",rest:REST.heavy},
+        {ex:"latraise",scheme:"3 × 12–15",rest:REST.light,note:"Add reps before weight."},
+        {ex:"pushdown",scheme:"3 × 10–12",rest:REST.light},
+      ]},
+      {d:"B — Pull",ex:[
+        {ex:"pullup",scheme:"RPT · 5 / 6 / 8",rest:REST.heavy,note:"Add weight once you hit 8 clean."},
+        {ex:"row",scheme:"3 × 8 / 10 / 12",rest:REST.mid},
+        {ex:"facepull",scheme:"3 × 15",rest:REST.light},
+        {ex:"curl",scheme:"3 × 8–12",rest:REST.light},
+      ]},
+      {d:"C — Legs & Core",ex:[
+        {ex:"squat",scheme:"RPT · 5 / 6 / 8",rest:REST.heavy},
+        {ex:"rdl",scheme:"3 × 8 / 10",rest:REST.mid},
+        {ex:"calf",scheme:"3 × 12–15",rest:REST.light},
+        {ex:"legraise",scheme:"3 × 10–15",rest:REST.light},
+        {ex:"latraise",scheme:"2 × 15",rest:REST.light,note:"Bonus delts — they recover fast."},
+      ]},
+    ]
+  },
+  sculpt:{
+    name:"Phase 2 · Sculpt",
+    weeks:"Weeks 9+",
+    days:["4 days / week","Push · Pull · Legs · Upper","More volume for stubborn areas"],
+    blurb:"Once your top lifts are solid, move to a 4-day split that adds an extra upper-body day to bring up shoulders, chest and back — the muscles that define the look. Keep reverse-pyramiding the first lift of each day.",
+    schedule:[
+      {d:"Push",ex:[
+        {ex:"inclinebp",scheme:"RPT · 5 / 6 / 8",rest:REST.heavy},
+        {ex:"ohp",scheme:"RPT · 6 / 8",rest:REST.heavy},
+        {ex:"dip",scheme:"3 × 8–10",rest:REST.mid},
+        {ex:"latraise",scheme:"4 × 12–15",rest:REST.light},
+        {ex:"pushdown",scheme:"3 × 10–12",rest:REST.light},
+      ]},
+      {d:"Pull",ex:[
+        {ex:"pullup",scheme:"RPT · 5 / 6 / 8",rest:REST.heavy},
+        {ex:"row",scheme:"3 × 8 / 10 / 12",rest:REST.mid},
+        {ex:"facepull",scheme:"3 × 15–20",rest:REST.light},
+        {ex:"curl",scheme:"3 × 8–12",rest:REST.light},
+      ]},
+      {d:"Legs",ex:[
+        {ex:"squat",scheme:"RPT · 5 / 6 / 8",rest:REST.heavy},
+        {ex:"rdl",scheme:"3 × 8 / 10",rest:REST.mid},
+        {ex:"splitsquat",scheme:"3 × 8–10 / leg",rest:REST.mid},
+        {ex:"calf",scheme:"4 × 12–15",rest:REST.light},
+        {ex:"abwheel",scheme:"3 × 8–12",rest:REST.light},
+      ]},
+      {d:"Upper",ex:[
+        {ex:"ohp",scheme:"RPT · 5 / 6 / 8",rest:REST.heavy},
+        {ex:"pullup",scheme:"3 × 6–8",rest:REST.mid},
+        {ex:"inclinebp",scheme:"3 × 8–10",rest:REST.mid},
+        {ex:"latraise",scheme:"4 × 12–15",rest:REST.light},
+        {ex:"curl",scheme:"3 × 10",rest:REST.light},
+        {ex:"legraise",scheme:"3 × 12–15",rest:REST.light},
+      ]},
+    ]
+  }
+};
+
+/* default weekly schedule: weekday -> phase/day */
+const DEFAULT_WEEK = {
+  1:{phase:"found",day:0}, // Mon Push
+  3:{phase:"found",day:1}, // Wed Pull
+  5:{phase:"found",day:2}, // Fri Legs
+};
+
+/* ---------- MOBILITY ---------- */
+const MOBILITY = {
+  daily:{
+    name:"Daily 10-Minute Flow",
+    blurb:"Do this every morning or before bed. Pliable, mobile joints keep you training pain-free for decades — and they make you move like an athlete, not a stiff gym bro.",
+    moves:[
+      {n:"World's Greatest Stretch",t:"5 / side",d:"Lunge, drop the back knee, drive the same-side elbow to the floor, then rotate the top arm to the ceiling. Opens hips, t-spine and hamstrings in one shot."},
+      {n:"Cat–Cow",t:"10 reps",d:"On all fours, alternate arching and rounding the spine slowly with the breath. Wakes up the whole spine."},
+      {n:"Deep Squat Hold + Pry",t:"60 sec",d:"Sink into a deep bodyweight squat, elbows inside the knees, gently pry the knees out. Restores hip and ankle mobility."},
+      {n:"Thoracic Rotations",t:"8 / side",d:"On all fours, hand behind the head, rotate the elbow down then open to the ceiling. Unlocks upper-back rotation for pressing and posture."},
+      {n:"90/90 Hip Switches",t:"10 reps",d:"Seated, both knees bent 90°, rotate both legs side to side without using the hands. Bulletproofs the hips."},
+      {n:"Couch Stretch",t:"45 sec / side",d:"Rear shin up against a wall/couch, kneel tall on the other leg. Opens the hip flexors that desk-sitting locks up."},
+    ]
+  },
+  warmup:{
+    name:"Pre-Lift Warm-Up",
+    blurb:"5 minutes before you touch a heavy bar. Primes the joints and nervous system so your top sets feel strong and safe.",
+    moves:[
+      {n:"Arm Circles + Band Pull-Aparts",t:"20 each",d:"Wake up the shoulders and rear delts before any pressing or pulling."},
+      {n:"Scapular Pull-Ups",t:"8 reps",d:"Hang and pull the shoulder blades down without bending the arms. Primes the lats."},
+      {n:"Bodyweight Squats → Deep Hold",t:"15 reps",d:"Grease the knees and hips before loading."},
+      {n:"Hip Airplanes",t:"5 / side",d:"Single-leg hinge with rotation — stabilizes the hips and glutes."},
+      {n:"Empty-Bar Practice Sets",t:"2 sets",d:"Always rehearse the day's main lift with light weight before the work sets."},
+    ]
+  },
+  cooldown:{
+    name:"Post-Lift Stretch",
+    blurb:"5 minutes after training, while you're warm. This is when flexibility gains actually stick.",
+    moves:[
+      {n:"Doorway Chest Stretch",t:"45 sec",d:"Open the chest and front delts after pressing — fixes the rounded look."},
+      {n:"Lat Stretch (Hang or Wall)",t:"45 sec",d:"Decompress the spine and lengthen the lats after pulling."},
+      {n:"Pigeon Pose",t:"60 sec / side",d:"Deep glute and hip opener after leg day."},
+      {n:"Standing Hamstring Stretch",t:"45 sec / side",d:"Lengthen the hamstrings after deadlifts/squats."},
+      {n:"Child's Pose + Side Reach",t:"60 sec",d:"Decompress and breathe to drop into recovery."},
+    ]
+  }
+};
+
+/* ============================================================ STATE ============================================================ */
+const LS_KEY="leadrole.v1";
+let state=load();
+function load(){try{return JSON.parse(localStorage.getItem(LS_KEY))||fresh();}catch(e){return fresh();}}
+function fresh(){return {logs:{},done:{},history:[],bw:175,unit:"lb",goal:"lean"};}
+function save(){localStorage.setItem(LS_KEY,JSON.stringify(state));}
+function todayKey(){const d=new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();}
+
+/* ============================================================ NAV ============================================================ */
+const views={today:render_today,program:render_program,library:render_library,mobility:render_mobility,fuel:render_fuel};
+const titles={today:"Today",program:"The Program",library:"Exercise Library",mobility:"Mobility & Flow",fuel:"Fuel & Leanness"};
+let current="today";
+document.querySelectorAll("nav button").forEach(b=>{b.onclick=()=>go(b.dataset.v);});
+function go(v){
+  current=v;
+  document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));
+  document.querySelectorAll(".view").forEach(s=>s.classList.remove("on"));
+  document.getElementById("v-"+v).classList.add("on");
+  document.getElementById("htitle").textContent=titles[v];
+  views[v]();window.scrollTo(0,0);
+}
+
+/* ============================================================ TODAY ============================================================ */
+function getTodaysSession(){const wd=new Date().getDay();const map=state.customWeek||DEFAULT_WEEK;return map[wd]||null;}
+function render_today(){
+  const el=document.getElementById("v-today");
+  const sess=getTodaysSession();
+  const dayName=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][new Date().getDay()];
+  const streak=last7Dots();
+
+  let html=`<div class="hero">
+    <div class="eyebrow">${dayName} · ${fmtDate()}</div>
+    <h1>Build the <span>leading-man</span> frame.</h1>
+    <p>Broad shoulders, lean waist, mobile & athletic — earned with strength, not bulk.</p>
+    <div class="streak">${streak}</div>
+  </div>`;
+
+  if(!sess){
+    html+=`<div class="card">
+      <div class="row between"><h3>Recovery Day</h3><span class="tag gold">Rest</span></div>
+      <p class="muted small" style="margin-top:8px">No lifting scheduled today. Do the <b>Daily Mobility Flow</b>, walk 8–10k steps, and let the muscle you built this week actually grow. Recovery is where the physique is made.</p>
+      <div class="row" style="gap:10px;margin-top:14px">
+        <button class="btn gold" onclick="go('mobility')">Open Mobility Flow</button>
+        <button class="btn" onclick="go('program')">View Program</button>
+      </div>
+    </div>`;
+    el.innerHTML=html+footer();return;
+  }
+
+  const phase=PROGRAM[sess.phase];
+  const day=phase.schedule[sess.day];
+  const dk=todayKey();
+  const doneMap=state.done[dk]||{};
+  const total=day.ex.length;
+  const completed=day.ex.filter((_,i)=>doneMap[i]).length;
+  const pct=Math.round(completed/total*100);
+
+  html+=`<div class="card">
+    <div class="row between" style="margin-bottom:4px">
+      <span class="daypill">${phase.name.split('·')[0].trim()} · ${day.d}</span>
+      ${ringSVG(pct)}
+    </div>
+    <p class="muted small" style="margin-top:6px">${completed} of ${total} exercises done. Reverse-pyramid the lifts marked <b style="color:var(--gold)">RPT</b>: heaviest set first, then drop the weight ~10% and add reps.</p>
+  </div>`;
+
+  day.ex.forEach((item,i)=>{
+    const e=EX[item.ex];
+    const done=doneMap[i];
+    const logKey=dk+"."+sess.phase+"."+sess.day+"."+i;
+    const log=state.logs[logKey]||{};
+    const nSets=schemeSets(item.scheme);
+    let setsHTML="";
+    for(let s=0;s<nSets;s++){
+      const sl=log[s]||{};
+      setsHTML+=`<div class="setrow">
+        <span class="lbl">Set ${s+1}</span>
+        <input class="inp" inputmode="decimal" placeholder="weight" value="${sl.w||''}" onchange="logSet('${logKey}',${s},'w',this.value)">
+        <input class="inp" inputmode="numeric" placeholder="reps" value="${sl.r||''}" onchange="logSet('${logKey}',${s},'r',this.value)">
+        <button class="setdone ${sl.done?'on':''}" onclick="toggleSet('${logKey}',${s},this)"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></button>
+      </div>`;
     }
-    function saveJSON(k, v) { localStorage.setItem(k, JSON.stringify(v)); }
+    html+=`<div class="ex ${done?'done':''}" id="ex-${i}">
+      <div class="ex-h">
+        <button class="chk ${done?'done':''}" onclick="toggleDone(${i},this);event.stopPropagation()"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></button>
+        <div style="flex:1" onclick="toggleExpand(${i})">
+          <div class="ex-n">${e.name}</div>
+          <div class="ex-meta"><span class="scheme">${item.scheme}</span> · rest ${item.rest}</div>
+        </div>
+        <button class="iconbtn" onclick="openEx('${item.ex}')" style="background:#d8b46a18"><svg viewBox="0 0 24 24" style="stroke:var(--gold)"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></button>
+      </div>
+      <div class="ex-body">
+        ${item.note?`<div class="note" style="margin-bottom:10px">${item.note}</div>`:''}
+        <div class="sets">${setsHTML}</div>
+        <button class="btn sm full" style="margin-top:10px" onclick="startRest('${item.rest}','${e.name}')">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 2h6"/></svg> Start ${item.rest} rest timer
+        </button>
+      </div>
+    </div>`;
+  });
 
-    /* ═══════════════════════════════════════════════
-       TEXT UTILS
-    ═══════════════════════════════════════════════ */
-    function norm(s) {
-      return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'')
-        .replace(/[''""\"]/g,'').replace(/&/g,' and ')
-        .replace(/[^a-zA-Z0-9]+/g,' ').toLowerCase().trim().replace(/\s+/g,' ');
-    }
-    function toks(s) { return norm(s).split(' ').filter(Boolean); }
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  html+=`<button class="btn ${completed===total?'gold':''} full" style="margin-top:6px" onclick="finishWorkout('${sess.phase}',${sess.day})">
+    ${completed===total?'✓ Finish & log workout':'Mark workout complete'}
+  </button>`;
 
-    function bestMatch(raw, nominees) {
-      const rn = norm(raw);
-      if (!rn) return '';
-      for (const n of nominees) {
-        const nn = norm(n);
-        if (rn === nn || rn.includes(nn) || nn.includes(rn)) return n;
-      }
-      let best = '', bestS = 0;
-      const rt = toks(raw);
-      for (const n of nominees) {
-        const nt = toks(n);
-        let overlap = 0;
-        for (const t of nt) if (rt.includes(t)) overlap++;
-        const s = overlap / Math.max(1, nt.length);
-        if (s > bestS) { bestS = s; best = n; }
-      }
-      return bestS >= 0.4 ? best : '';
-    }
+  el.innerHTML=html+footer();
+}
 
-    /* ═══════════════════════════════════════════════
-       SCORING
-    ═══════════════════════════════════════════════ */
-    function winner(cat) { return manualOverrides[cat.id] || liveWinners[cat.id] || ''; }
-    function announced() { return categories.filter(c => winner(c)).length; }
-    function score(key) { return categories.reduce((s, c) => s + (winner(c) && winner(c) === c[key] ? 1 : 0), 0); }
-    function alive(key) {
-      return categories.reduce((s, c) => {
-        const w = winner(c);
-        if (!w) return s + 1;
-        return s + (w === c[key] ? 1 : 0);
-      }, 0);
-    }
+function schemeSets(s){
+  if(s.includes("×")){const m=s.match(/(\d+)\s*×/);return m?+m[1]:3;}
+  const seg=s.split("·").pop();
+  return (seg.match(/\//g)||[]).length+1;
+}
+function ringSVG(pct){
+  const r=15,c=2*Math.PI*r,off=c-(pct/100)*c;
+  return `<svg width="40" height="40" class="progress-ring" viewBox="0 0 40 40">
+    <circle cx="20" cy="20" r="${r}" stroke="#2a2a32" stroke-width="4" fill="none"/>
+    <circle cx="20" cy="20" r="${r}" stroke="#d8b46a" stroke-width="4" fill="none" stroke-linecap="round"
+      stroke-dasharray="${c}" stroke-dashoffset="${off}"/>
+    <text x="20" y="24" text-anchor="middle" transform="rotate(90 20 20)" fill="#d8b46a" font-size="11" font-weight="800">${pct}%</text>
+  </svg>`;
+}
+function last7Dots(){
+  let out="";
+  for(let i=6;i>=0;i--){
+    const d=new Date();d.setDate(d.getDate()-i);
+    const k=d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+    out+=`<div class="d ${state.history.includes(k)?'on':''}"></div>`;
+  }
+  return out;
+}
+function fmtDate(){const d=new Date();return d.toLocaleDateString(undefined,{month:'short',day:'numeric'});}
+function toggleExpand(i){document.getElementById("ex-"+i).classList.toggle("open");}
+function toggleDone(i){const dk=todayKey();state.done[dk]=state.done[dk]||{};state.done[dk][i]=!state.done[dk][i];save();render_today();}
+function logSet(key,s,field,val){state.logs[key]=state.logs[key]||{};state.logs[key][s]=state.logs[key][s]||{};state.logs[key][s][field]=val;save();}
+function toggleSet(key,s,btn){state.logs[key]=state.logs[key]||{};state.logs[key][s]=state.logs[key][s]||{};state.logs[key][s].done=!state.logs[key][s].done;save();btn.classList.toggle("on");}
+function finishWorkout(){const k=todayKey();if(!state.history.includes(k))state.history.push(k);save();toast("Workout logged — recover hard 💪");render_today();}
 
-    /* ═══════════════════════════════════════════════
-       WIKIPEDIA API (native CORS!)
-    ═══════════════════════════════════════════════ */
-    async function fetchWikipedia() {
-      const apiUrl = `https://en.wikipedia.org/w/api.php?action=parse&page=${encodeURIComponent(WIKI_ARTICLE)}&prop=text&format=json&origin=*`;
-      const resp = await fetch(apiUrl, { cache: 'no-store' });
-      if (!resp.ok) throw new Error(`Wiki HTTP ${resp.status}`);
-      const data = await resp.json();
-      if (!data.parse || !data.parse.text) throw new Error('No wiki parse data');
-      return data.parse.text['*'];
-    }
+/* ============================================================ PROGRAM ============================================================ */
+let progPhase="found", progDay=0;
+function render_program(){
+  const el=document.getElementById("v-program");
+  let html=`<div class="seg">
+    <button class="${progPhase==='found'?'on':''}" onclick="progPhase='found';progDay=0;render_program()">Foundation</button>
+    <button class="${progPhase==='sculpt'?'on':''}" onclick="progPhase='sculpt';progDay=0;render_program()">Sculpt</button>
+  </div>`;
+  const p=PROGRAM[progPhase];
+  html+=`<div class="card">
+    <div class="eyebrow">${p.weeks}</div>
+    <h2 style="margin:6px 0 8px;font-size:20px">${p.name}</h2>
+    <p class="muted small">${p.blurb}</p>
+    <div class="wrap-g" style="margin-top:12px">${p.days.map(d=>`<span class="tag gold">${d}</span>`).join("")}</div>
+  </div>`;
+  html+=`<div class="daynav">`;
+  p.schedule.forEach((d,i)=>{
+    html+=`<button class="daybtn ${i===progDay?'on':''}" onclick="progDay=${i};render_program()">
+      <div class="dn">DAY ${i+1}</div><div class="dl">${d.d.split('—')[0].split('·')[0].trim()}</div></button>`;
+  });
+  html+=`</div>`;
+  const day=p.schedule[progDay];
+  html+=`<div class="card"><h3>${day.d}</h3>`;
+  day.ex.forEach(item=>{
+    const e=EX[item.ex];
+    html+=`<div class="ex" style="margin-top:10px" onclick="openEx('${item.ex}')">
+      <div class="ex-h">
+        <div class="thumb"><svg viewBox="0 0 24 24">${FIG[e.icon]}</svg></div>
+        <div style="flex:1">
+          <div class="ex-n" style="font-size:14.5px">${e.name}</div>
+          <div class="ex-meta"><span class="scheme">${item.scheme}</span> · rest ${item.rest}</div>
+        </div>
+        <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:var(--mut2);stroke-width:2;fill:none"><path d="M9 6l6 6-6 6"/></svg>
+      </div>
+    </div>`;
+  });
+  html+=`</div>`;
+  html+=`<div class="card">
+    <h3 style="font-size:15px">How to run it</h3>
+    <ul class="cuelist" style="margin-top:8px">
+      <li><b>Reverse Pyramid (RPT):</b> warm up, then do your heaviest set first. Drop the weight ~10% and add 1–2 reps for each following set.</li>
+      <li><b>Progress every week:</b> when you hit the top of a rep range on your first set, add the smallest weight increment next time.</li>
+      <li><b>Leave 1–2 reps in the tank</b> on heavy sets. Quality &amp; longevity beat grinding to failure.</li>
+      <li><b>Isolation moves</b> (raises, curls, pushdowns): chase reps and the squeeze, not max weight.</li>
+      <li><b>Always warm up</b> the joints (Mobility tab) before the first heavy lift.</li>
+    </ul>
+  </div>`;
+  el.innerHTML=html+footer();
+}
 
-    function parseWikiHTML(html) {
-      const winners = {};
+/* ============================================================ LIBRARY ============================================================ */
+let libFilter="all", libSearch="";
+const GROUPS={all:"All",shoulder:"Shoulders & Chest",pull:"Back & Arms",legs:"Legs",core:"Core"};
+function render_library(){
+  const el=document.getElementById("v-library");
+  let html=`<div class="searchwrap">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+    <input class="search" placeholder="Search exercises…" value="${libSearch}" oninput="libSearch=this.value;renderLibList()">
+  </div>
+  <div class="chips">${Object.entries(GROUPS).map(([k,v])=>
+    `<button class="chip ${libFilter===k?'on':''}" onclick="libFilter='${k}';render_library()">${v}</button>`).join("")}</div>
+  <div id="libList"></div>`;
+  el.innerHTML=html;
+  renderLibList();
+  el.insertAdjacentHTML("beforeend",footer());
+}
+function renderLibList(){
+  const list=document.getElementById("libList");
+  const q=libSearch.toLowerCase();
+  const items=Object.entries(EX).filter(([id,e])=>{
+    const okG=libFilter==="all"||e.group===libFilter;
+    const okS=!q||e.name.toLowerCase().includes(q)||e.muscles.join(" ").toLowerCase().includes(q);
+    return okG&&okS;
+  });
+  if(!items.length){list.innerHTML=`<p class="muted small" style="text-align:center;padding:20px">No moves match.</p>`;return;}
+  list.innerHTML=items.map(([id,e])=>`
+    <div class="libitem" onclick="openEx('${id}')">
+      <div class="thumb"><svg viewBox="0 0 24 24">${FIG[e.icon]}</svg></div>
+      <div style="flex:1">
+        <div class="ex-n" style="font-size:14.5px">${e.name}</div>
+        <div class="ex-meta">${e.equip} · ${e.muscles[0]}</div>
+      </div>
+      <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:var(--mut2);stroke-width:2;fill:none"><path d="M9 6l6 6-6 6"/></svg>
+    </div>`).join("");
+}
 
-      // Wikipedia structure for Academy Awards:
-      // - Each category has a gold (#F9EFAA) div header
-      // - ALL nominees are listed under every category
-      // - ONLY confirmed winners are marked with ‡ (double dagger)
-      // - Wikipedia explicitly states: "Winners indicated with a double dagger (‡)"
-      // - We MUST check for ‡ to avoid counting unannounced categories
+/* ============================================================ DETAIL SHEET ============================================================ */
+function openEx(id){
+  const e=EX[id];
+  const yt="https://www.youtube.com/results?search_query="+encodeURIComponent("how to "+e.name+" proper form");
+  const card=document.getElementById("sheetCard");
+  card.innerHTML=`
+    <div class="grab"></div>
+    <div class="sheet-hero"><svg class="fig" viewBox="0 0 24 24">${FIG[e.icon]}</svg></div>
+    <div class="eyebrow">${e.equip}</div>
+    <h2 style="font-size:22px;margin:6px 0 2px">${e.name}</h2>
+    <div class="musclebar">${e.muscles.map(m=>`<span class="mb">${m}</span>`).join("")}</div>
+    <p class="muted small" style="margin-top:6px">${e.why}</p>
+    <a class="btn gold full" href="${yt}" target="_blank" rel="noopener" style="margin-top:16px">
+      <svg viewBox="0 0 24 24"><path d="M5 4l14 8-14 8z"/></svg> Watch demo videos
+    </a>
+    <div class="sec-h">How to perform</div>
+    <ol class="steps">${e.steps.map(s=>`<li>${s}</li>`).join("")}</ol>
+    <div class="sec-h">Coaching cues</div>
+    <ul class="cuelist">${e.cues.map(c=>`<li>${c}</li>`).join("")}</ul>
+    <div class="sec-h">Common mistakes</div>
+    <ul class="cuelist bad">${e.faults.map(f=>`<li>${f}</li>`).join("")}</ul>
+    <button class="btn full" style="margin-top:18px" onclick="closeSheet()">Close</button>`;
+  document.getElementById("sheet").classList.add("on");
+  card.scrollTop=0;
+}
+function closeSheet(){document.getElementById("sheet").classList.remove("on");}
+document.getElementById("sheetBg").onclick=closeSheet;
 
-      const goldDivRegex = /<div[^>]*style="[^"]*F9EFAA[^"]*"[^>]*>(.*?)<\/div>/gs;
+/* ============================================================ MOBILITY ============================================================ */
+function render_mobility(){
+  const el=document.getElementById("v-mobility");
+  let html=`<div class="card">
+    <div class="eyebrow">Move like an athlete</div>
+    <h2 style="margin:6px 0 8px;font-size:20px">Mobile · Flexible · Pliable</h2>
+    <p class="muted small">Strength without mobility ages badly. These routines keep your hips, shoulders and spine supple so you stay pain-free, move well, and look relaxed and athletic — not stiff. Hold each stretch with calm, deep breathing.</p>
+  </div>`;
+  [MOBILITY.daily,MOBILITY.warmup,MOBILITY.cooldown].forEach(r=>{
+    html+=`<div class="card"><h3 style="font-size:16px">${r.name}</h3>
+      <p class="muted small" style="margin:6px 0 12px">${r.blurb}</p>`;
+    r.moves.forEach(m=>{
+      html+=`<div class="ex" style="margin-bottom:8px"><div class="ex-h">
+        <div class="thumb"><svg viewBox="0 0 24 24">${FIG.mobility}</svg></div>
+        <div style="flex:1"><div class="ex-n" style="font-size:14px">${m.n}</div>
+        <div class="ex-meta">${m.d}</div></div>
+        <span class="tag gold" style="flex:none">${m.t}</span>
+      </div></div>`;
+    });
+    html+=`</div>`;
+  });
+  el.innerHTML=html+footer();
+}
 
-      const goldSections = [];
-      let m;
-      while ((m = goldDivRegex.exec(html)) !== null) {
-        const catText = m[1].replace(/<[^>]+>/g, '').trim();
-        if (catText.length < 4 || catText.length > 80) continue;
-        goldSections.push({ name: catText, end: m.index + m[0].length });
-      }
+/* ============================================================ FUEL ============================================================ */
+function render_fuel(){
+  const el=document.getElementById("v-fuel");
+  const bw=state.bw||175, unit=state.unit||"lb", goal=state.goal||"lean";
+  const bwLb = unit==="lb"?bw:Math.round(bw*2.205);
+  const protein=Math.round(bwLb*0.9);
+  const cals = goal==="lean"? Math.round(bwLb*13) : goal==="recomp"? Math.round(bwLb*15) : Math.round(bwLb*17);
+  const fat=Math.round(bwLb*0.4);
+  const carbs=Math.round((cals-(protein*4)-(fat*9))/4);
 
-      const wikiToOurs = {
-        'best picture': 'best-picture',
-        'best directing': 'best-director',
-        'best actor in a leading role': 'best-actor',
-        'best actress in a leading role': 'best-actress',
-        'best actor in a supporting role': 'best-supporting-actor',
-        'best actress in a supporting role': 'best-supporting-actress',
-        'best writing (original screenplay)': 'best-original-screenplay',
-        'best writing (adapted screenplay)': 'best-adapted-screenplay',
-        'best animated feature film': 'best-animated-feature',
-        'best international feature film': 'best-international-feature',
-        'best documentary feature film': 'best-documentary-feature',
-        'best documentary short film': 'best-documentary-short',
-        'best live action short film': 'best-live-action-short',
-        'best animated short film': 'best-animated-short',
-        'best music (original score)': 'best-original-score',
-        'best music (original song)': 'best-original-song',
-        'best sound': 'best-sound',
-        'best casting': 'best-casting',
-        'best production design': 'best-production-design',
-        'best cinematography': 'best-cinematography',
-        'best makeup and hairstyling': 'best-makeup-and-hairstyling',
-        'best costume design': 'best-costume-design',
-        'best film editing': 'best-editing',
-        'best visual effects': 'best-visual-effects',
-      };
+  let html=`<div class="card">
+    <div class="eyebrow">Get lean, stay lean</div>
+    <h2 style="margin:6px 0 8px;font-size:20px">Fuel the look</h2>
+    <p class="muted small">The leading-man physique is mostly about being <b>lean</b> — abs and sharp lines show up around 8–12% body fat. The simplest sustainable approach: eat high protein, control total calories, and keep food choices mostly whole. An intermittent-fasting window (eat in ~8 hours, e.g. noon–8pm) makes calorie control effortless for most people.</p>
+  </div>
+  <div class="card">
+    <h3 style="font-size:15px;margin-bottom:12px">Your daily targets</h3>
+    <div class="calc-row">
+      <label><span class="lab">Body weight</span>
+        <input class="inp" inputmode="decimal" value="${bw}" onchange="setBW(this.value)"></label>
+      <label><span class="lab">Unit</span>
+        <div class="seg" style="margin:0">
+          <button class="${unit==='lb'?'on':''}" onclick="setUnit('lb')">lb</button>
+          <button class="${unit==='kg'?'on':''}" onclick="setUnit('kg')">kg</button>
+        </div></label>
+    </div>
+    <span class="lab" style="font-size:12px;color:var(--mut);font-weight:700">Goal</span>
+    <div class="seg" style="margin-top:5px">
+      <button class="${goal==='lean'?'on':''}" onclick="setGoal('lean')">Cut</button>
+      <button class="${goal==='recomp'?'on':''}" onclick="setGoal('recomp')">Maintain</button>
+      <button class="${goal==='gain'?'on':''}" onclick="setGoal('gain')">Lean Gain</button>
+    </div>
+    <div class="statgrid">
+      <div class="stat"><b>${cals}</b><span>CALORIES</span></div>
+      <div class="stat"><b>${protein}g</b><span>PROTEIN</span></div>
+      <div class="stat"><b>${carbs<0?0:carbs}g</b><span>CARBS</span></div>
+    </div>
+    <div class="stat" style="margin-top:10px"><b>${fat}g</b><span>FATS PER DAY</span></div>
+    <p class="tiny muted" style="margin-top:10px">Estimates only — adjust by results. If the scale/mirror isn't moving over 2–3 weeks, nudge calories ±10%.</p>
+  </div>
+  <div class="card">
+    <h3 style="font-size:15px">The 6 rules</h3>
+    <ul class="cuelist" style="margin-top:8px">
+      <li><b>Protein first.</b> Hit ~0.9–1g per lb of bodyweight daily. It builds muscle and kills hunger.</li>
+      <li><b>Pick an eating window.</b> An ~8-hour window (e.g. 12–8pm) naturally trims mindless calories. Black coffee, water and tea during the fast.</li>
+      <li><b>Mostly whole foods.</b> Meat, eggs, fish, fruit, veg, potatoes, rice, oats, dairy. Leave ~15% room for things you enjoy so it lasts.</li>
+      <li><b>Lift heavy + eat enough protein</b> so the weight you lose is fat, not the muscle that creates the shape.</li>
+      <li><b>Walk daily.</b> 8–10k steps burns meaningful calories without eating into recovery.</li>
+      <li><b>Sleep 7–9 hours.</b> The most underrated fat-loss and muscle-building tool there is.</li>
+    </ul>
+  </div>`;
+  el.innerHTML=html+footer();
+}
+function setBW(v){state.bw=parseFloat(v)||0;save();render_fuel();}
+function setUnit(u){state.unit=u;save();render_fuel();}
+function setGoal(g){state.goal=g;save();render_fuel();}
 
-      const catById = {};
-      for (const c of categories) catById[c.id] = c;
+/* ============================================================ REST TIMER ============================================================ */
+let restInt=null, restSec=0;
+function startRest(str,name){
+  const parts=str.split(":");restSec=(+parts[0])*60+(+parts[1]);
+  document.getElementById("restSub").textContent=name+" — recover, then go again";
+  document.getElementById("rest").classList.add("up");
+  paintRest();clearInterval(restInt);
+  restInt=setInterval(()=>{
+    restSec--;paintRest();
+    if(restSec<=0){clearInterval(restInt);buzz();document.getElementById("restSub").textContent="Time! Next set 💥";
+      setTimeout(()=>document.getElementById("rest").classList.remove("up"),2500);}
+  },1000);
+}
+function paintRest(){const m=Math.floor(Math.max(restSec,0)/60),s=Math.max(restSec,0)%60;document.getElementById("restTime").textContent=m+":"+String(s).padStart(2,"0");}
+document.getElementById("restPlus").onclick=()=>{restSec+=15;paintRest();};
+document.getElementById("restMinus").onclick=()=>{restSec=Math.max(0,restSec-15);paintRest();};
+document.getElementById("restStop").onclick=()=>{clearInterval(restInt);document.getElementById("rest").classList.remove("up");};
+function buzz(){if(navigator.vibrate)navigator.vibrate([200,100,200]);}
 
-      for (let i = 0; i < goldSections.length; i++) {
-        const section = goldSections[i];
-        const catId = wikiToOurs[section.name.toLowerCase()];
-        if (!catId || !catById[catId]) continue;
-        const cat = catById[catId];
+/* ============================================================ TOAST + FOOTER ============================================================ */
+let toastT=null;
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("on");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("on"),2200);}
+function footer(){return `<div class="foot">LEAD ROLE · an original program built on standard strength-training principles.<br>
+  Educational use only — not medical advice. Train smart, and see a doctor before starting any program.</div>`;}
 
-        // Get HTML between this gold div and the next one
-        const nextEnd = i + 1 < goldSections.length ? goldSections[i + 1].end - 200 : section.end + 8000;
-        const between = html.substring(section.end, nextEnd);
-
-        // CRITICAL: Only count this category if the section contains ‡
-        // This is Wikipedia's definitive marker for an announced winner
-        if (!between.includes('\u2021') && !between.includes('&#8225;') && !between.includes('&Dagger;')) {
-          continue; // No winner announced yet for this category
-        }
-
-        // Winner is the first nominee listed (before the ‡ marker)
-        const links = [];
-        const linkRe = /<a[^>]*title="([^"]+)"[^>]*>/g;
-        let lm;
-        while ((lm = linkRe.exec(between)) !== null && links.length < 6) {
-          const title = lm[1].replace(/ \(film\)| \(2025 film\)| \(2026 film\)/g, '').trim();
-          if (title.length > 2 && !title.includes('edit section') && !title.includes('Wikipedia') && !title.includes('cite_')) {
-            links.push(title);
-          }
-        }
-
-        if (links.length === 0) continue;
-
-        // Try matching first link, then combinations
-        let match = bestMatch(links[0], cat.nominees);
-        if (!match && links.length > 1) {
-          match = bestMatch(links[0] + ' - ' + links[1], cat.nominees);
-        }
-        if (!match && links.length > 1) {
-          match = bestMatch(links[1], cat.nominees);
-        }
-        if (!match) {
-          for (let j = 0; j < Math.min(4, links.length); j++) {
-            match = bestMatch(links[j], cat.nominees);
-            if (match) break;
-          }
-        }
-
-        if (match) winners[catId] = match;
-      }
-
-      return winners;
-    }
-
-    /* ═══════════════════════════════════════════════
-       NEWS SCRAPER (via CORS proxies)
-    ═══════════════════════════════════════════════ */
-    async function fetchViaProxy(url) {
-      for (const proxy of CORS_PROXIES) {
-        try {
-          const resp = await fetch(proxy(url), { cache: 'no-store', signal: AbortSignal.timeout(8000) });
-          if (!resp.ok) continue;
-          return await resp.text();
-        } catch { continue; }
-      }
-      throw new Error('All proxies failed');
-    }
-
-    function parseNewsHTML(html) {
-      const doc = new DOMParser().parseFromString(html, 'text/html');
-      const text = doc.body.innerText || '';
-      const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
-      const normLines = lines.map(norm);
-      const winners = {};
-      const allHeadings = categories.flatMap(c => c.headings.map(norm));
-
-      for (const cat of categories) {
-        let start = -1;
-        for (let i = 0; i < normLines.length; i++) {
-          for (const h of cat.headings) {
-            const nh = norm(h);
-            if (normLines[i] === nh || normLines[i].includes(nh)) { start = i; break; }
-          }
-          if (start !== -1) break;
-        }
-        if (start === -1) continue;
-
-        let end = lines.length;
-        for (let i = start + 1; i < normLines.length; i++) {
-          if (allHeadings.some(h => normLines[i] === h || normLines[i].includes(h))) { end = i; break; }
-        }
-
-        const chunk = lines.slice(start + 1, Math.min(end, start + 20));
-
-        // Only match lines that explicitly say "winner" — do NOT blindly match first nominee
-        for (const line of chunk) {
-          if (/winner/i.test(line)) {
-            // Extract the name before or after "winner"
-            let cleaned = line
-              .replace(/\*?\s*winner\s*[:—\-]?\s*/i, '')  // "WINNER: Name" -> "Name"
-              .replace(/\s*\|?\s*winner.*/i, '')           // "Name | WINNER" -> "Name"
-              .replace(/["""\u2018\u2019\u201c\u201d]/g, '')
-              .trim();
-            if (!cleaned) {
-              // Try: "Name — Winner" pattern
-              const parts = line.split(/winner/i);
-              cleaned = (parts[0] || '').replace(/[|—\-:""]/g, '').trim();
-            }
-            const match = bestMatch(cleaned, cat.nominees);
-            if (match) { winners[cat.id] = match; break; }
-          }
-        }
-      }
-      return winners;
-    }
-
-    /* ═══════════════════════════════════════════════
-       SYNC ORCHESTRATOR
-    ═══════════════════════════════════════════════ */
-    let syncing = false;
-    async function syncLive(manual = false) {
-      if (syncing) return;
-      syncing = true;
-      updateBadge('off', 'Syncing...');
-      let totalNew = 0;
-      let usedSource = '';
-
-      // 1) Try Wikipedia API first (no proxy needed)
-      try {
-        const html = await fetchWikipedia();
-        const w = parseWikiHTML(html);
-        const newCount = mergeWinners(w);
-        if (newCount > 0) {
-          totalNew += newCount;
-          usedSource = 'Wikipedia';
-        }
-      } catch (e) {
-        // Wikipedia failed, continue to news sources
-      }
-
-      // 2) Try news sources via CORS proxies
-      for (const url of NEWS_SOURCES) {
-        try {
-          const html = await fetchViaProxy(url);
-          const w = parseNewsHTML(html);
-          const newCount = mergeWinners(w);
-          if (newCount > 0) {
-            totalNew += newCount;
-            if (!usedSource) usedSource = new URL(url).hostname;
-          }
-        } catch { continue; }
-      }
-
-      // Update status
-      const announcedNow = announced();
-      if (totalNew > 0) {
-        syncStatus = { state: 'on', source: usedSource, time: new Date(), error: '' };
-        if (manual) showToast(`Pulled ${totalNew} new winner${totalNew>1?'s':''} from ${usedSource}`);
-      } else if (announcedNow > 0) {
-        syncStatus = { state: 'on', source: syncStatus.source || 'cached', time: new Date(), error: '' };
-        if (manual) showToast('No new winners found. Sources are up to date.');
-      } else {
-        syncStatus = { state: 'warn', source: '', time: new Date(), error: 'No winners announced yet' };
-        if (manual) showToast('No winners announced yet. Will keep checking.');
-      }
-
-      syncing = false;
-      render();
-    }
-
-    function mergeWinners(w) {
-      let count = 0;
-      for (const [id, val] of Object.entries(w)) {
-        if (val && !liveWinners[id]) {
-          liveWinners[id] = val;
-          count++;
-        }
-      }
-      if (count > 0) saveJSON(STORE_LIVE, liveWinners);
-      return count;
-    }
-
-    /* ═══════════════════════════════════════════════
-       CONFETTI
-    ═══════════════════════════════════════════════ */
-    const canvas = document.getElementById('confetti');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    function spawnConfetti(color) {
-      const colors = color === 'purple'
-        ? ['#cc9bff','#e7d3ff','#a06cdf','#deb974']
-        : ['#97efba','#c8f7da','#60c285','#deb974'];
-      for (let i = 0; i < 60; i++) {
-        particles.push({
-          x: Math.random() * canvas.width,
-          y: -20 - Math.random() * 200,
-          w: 6 + Math.random() * 6,
-          h: 4 + Math.random() * 4,
-          color: colors[Math.floor(Math.random() * colors.length)],
-          vx: (Math.random() - .5) * 3,
-          vy: 2 + Math.random() * 4,
-          rot: Math.random() * 6.28,
-          vr: (Math.random() - .5) * .2,
-          life: 1,
-        });
-      }
-      if (!confettiRunning) animateConfetti();
-    }
-
-    let confettiRunning = false;
-    function animateConfetti() {
-      confettiRunning = true;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles = particles.filter(p => p.life > 0);
-      for (const p of particles) {
-        p.x += p.vx;
-        p.y += p.vy;
-        p.rot += p.vr;
-        p.life -= .008;
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate(p.rot);
-        ctx.globalAlpha = p.life;
-        ctx.fillStyle = p.color;
-        ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
-        ctx.restore();
-      }
-      if (particles.length > 0) requestAnimationFrame(animateConfetti);
-      else { confettiRunning = false; ctx.clearRect(0, 0, canvas.width, canvas.height); }
-    }
-
-    /* ═══════════════════════════════════════════════
-       RENDER
-    ═══════════════════════════════════════════════ */
-    function updateBadge(state, label) {
-      const badge = document.getElementById('live-badge');
-      const lbl = document.getElementById('live-label');
-      badge.className = 'live-badge ' + state;
-      lbl.textContent = label || '';
-    }
-
-    function render() {
-      const a = announced();
-      const sLuke = score('luke');
-      const sBC = score('gf');
-      const pLuke = a ? Math.round((sLuke / a) * 100) : 0;
-      const pBC = a ? Math.round((sBC / a) * 100) : 0;
-
-      // Score animation
-      const elLuke = document.getElementById('score-luke');
-      const elBC = document.getElementById('score-bc');
-      elLuke.textContent = sLuke;
-      elBC.textContent = sBC;
-
-      if (sLuke > prevScores.luke) {
-        elLuke.classList.add('bump');
-        spawnConfetti('purple');
-        setTimeout(() => elLuke.classList.remove('bump'), 400);
-      }
-      if (sBC > prevScores.bc) {
-        elBC.classList.add('bump');
-        spawnConfetti('green');
-        setTimeout(() => elBC.classList.remove('bump'), 400);
-      }
-      prevScores = { luke: sLuke, bc: sBC };
-
-      document.getElementById('remaining-luke').textContent = categories.length - a;
-      document.getElementById('remaining-bc').textContent = categories.length - a;
-      document.getElementById('pct-luke').textContent = pLuke + '%';
-      document.getElementById('pct-bc').textContent = pBC + '%';
-      document.getElementById('fill-luke').style.width = pLuke + '%';
-      document.getElementById('fill-bc').style.width = pBC + '%';
-
-      // Chateau status
-      const left = categories.length - a;
-      let chateau = 'No one is ahead yet. The martini bill is floating in the air.';
-      if (a > 0) {
-        if (sLuke === sBC) {
-          chateau = `Dead even at <strong>${sLuke}-${sBC}</strong>. <strong>${left}</strong> categories left. The Chateau tab is up for grabs.`;
-        } else {
-          const leader = sLuke > sBC ? 'Luke' : 'Baby Cakes';
-          const trailer = sLuke > sBC ? 'Baby Cakes' : 'Luke';
-          const gap = Math.abs(sLuke - sBC);
-          chateau = `<strong>${leader}</strong> leads by <strong>${gap}</strong>. <strong>${trailer}</strong> is staring down the Chateau Marmont martini bill.`;
-          if (a === categories.length) {
-            chateau = sLuke === sBC
-              ? `It ended in a tie at <strong>${sLuke}-${sBC}</strong>! You both owe each other a martini.`
-              : `<strong>${leader}</strong> wins <strong>${Math.max(sLuke,sBC)}-${Math.min(sLuke,sBC)}</strong>! <strong>${trailer}</strong> owes a Chateau Marmont martini extravaganza.`;
-          }
-        }
-      }
-      document.getElementById('chateau-status').innerHTML = chateau;
-
-      // Martini emojis (1 per point gap)
-      const gap = Math.abs(sLuke - sBC);
-      document.getElementById('martini-row').innerHTML = gap > 0
-        ? Array(Math.min(gap, 12)).fill('🍸').join('')
-        : (a > 0 ? '⚖️' : '');
-
-      // Live badge
-      if (syncStatus.state === 'on') {
-        updateBadge('on', `Live · ${a}/${categories.length} announced`);
-      } else if (syncStatus.state === 'warn') {
-        updateBadge('warn', syncStatus.error || 'Waiting for results');
-      } else {
-        updateBadge('off', 'Connecting...');
-      }
-      const detail = document.getElementById('sync-detail');
-      if (syncStatus.time) {
-        const t = syncStatus.time.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
-        detail.textContent = syncStatus.source
-          ? `Last sync: ${t} via ${syncStatus.source}`
-          : `Last check: ${t}`;
-      }
-
-      // Grid
-      buildGrid();
-    }
-
-    function buildGrid() {
-      const grid = document.getElementById('grid');
-      grid.innerHTML = '';
-      categories.forEach((cat, i) => {
-        const w = winner(cat);
-        const lukeOK = w && w === cat.luke;
-        const bcOK = w && w === cat.gf;
-        const isManual = !!manualOverrides[cat.id];
-
-        let resultText = '';
-        if (w) {
-          if (lukeOK && bcOK) resultText = 'Both nailed it!';
-          else if (lukeOK) resultText = 'Luke scores!';
-          else if (bcOK) resultText = 'Baby Cakes scores!';
-          else resultText = 'No points for either.';
-        }
-
-        const el = document.createElement('article');
-        el.className = 'cat' + (w ? ' done' : '');
-        el.innerHTML = `
-          <div class="cat-head">
-            <div class="cat-title">${cat.title}</div>
-            <div class="cat-num">${String(i+1).padStart(2,'0')}</div>
-          </div>
-          <div class="cat-status ${w ? 'decided' : 'pending'}">
-            <span>${w ? (isManual ? '✏️' : '🏆') : '⏳'}</span>
-            ${w ? (isManual ? 'Manual' : 'Winner announced') : 'Awaiting envelope'}
-          </div>
-          ${w ? `<div class="cat-winner"><span class="winner-icon">🏆</span> ${esc(w)}</div>` : ''}
-          <div class="picks">
-            <div class="pick-card luke ${w ? (lukeOK ? 'correct' : 'wrong') : ''}">
-              <div class="pick-who">Luke</div>
-              <div class="pick-val">${esc(cat.luke)}</div>
-            </div>
-            <div class="pick-card bc ${w ? (bcOK ? 'correct' : 'wrong') : ''}">
-              <div class="pick-who">Baby Cakes</div>
-              <div class="pick-val">${esc(cat.gf)}</div>
-            </div>
-          </div>
-          <select data-id="${cat.id}">
-            <option value="">${w ? 'Clear override' : 'Set winner manually...'}</option>
-            ${cat.nominees.map(n => `<option value="${esc(n)}" ${manualOverrides[cat.id] === n ? 'selected' : ''}>${esc(n)}</option>`).join('')}
-          </select>
-          <div class="cat-result">${resultText}</div>
-        `;
-        grid.appendChild(el);
-      });
-
-      grid.querySelectorAll('select[data-id]').forEach(sel => {
-        sel.addEventListener('change', e => {
-          const id = e.target.dataset.id;
-          const val = e.target.value;
-          if (val) manualOverrides[id] = val;
-          else delete manualOverrides[id];
-          saveJSON(STORE_MANUAL, manualOverrides);
-          render();
-        });
-      });
-    }
-
-    /* ═══════════════════════════════════════════════
-       ACTIONS
-    ═══════════════════════════════════════════════ */
-    function showToast(msg) {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.classList.add('show');
-      clearTimeout(showToast._t);
-      showToast._t = setTimeout(() => t.classList.remove('show'), 2800);
-    }
-
-    async function shareLink() {
-      const url = location.href;
-      try {
-        if (navigator.share) {
-          await navigator.share({ title: 'Luke vs Baby Cakes — Oscar Showdown', text: 'Follow our Oscar showdown live! 🍸', url });
-        } else {
-          await navigator.clipboard.writeText(url);
-          showToast('Link copied! Text it to Baby Cakes.');
-        }
-      } catch {
-        try { await navigator.clipboard.writeText(url); showToast('Link copied!'); }
-        catch { showToast('Could not share in this browser.'); }
-      }
-    }
-
-    async function copyStandings() {
-      const lines = categories.map(c => {
-        const w = winner(c);
-        return `${w ? '✅' : '⏳'} ${c.title}: ${w || 'Waiting'}`;
-      }).join('\n');
-      const text = `🏆 Luke vs. Baby Cakes — Oscar Showdown\n\nLuke: ${score('luke')}  |  Baby Cakes: ${score('gf')}\nAnnounced: ${announced()}/${categories.length}\n\n${lines}`;
-      try { await navigator.clipboard.writeText(text); showToast('Standings copied!'); }
-      catch { showToast('Clipboard blocked.'); }
-    }
-
-    function clearManual() {
-      manualOverrides = {};
-      saveJSON(STORE_MANUAL, manualOverrides);
-      render();
-      showToast('Manual overrides cleared.');
-    }
-
-    /* ═══════════════════════════════════════════════
-       BOOT
-    ═══════════════════════════════════════════════ */
-    render();
-    syncLive(false);
-    // Poll every 30 seconds for live results
-    setInterval(() => syncLive(false), 30000);
-  </script>
+/* ============================================================ INIT ============================================================ */
+render_today();
+if("serviceWorker" in navigator){navigator.serviceWorker.register("/sw.js").catch(()=>{});}
+</script>
 </body>
 </html>
