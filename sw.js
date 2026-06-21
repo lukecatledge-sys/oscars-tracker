@@ -1,6 +1,6 @@
 /* Lead Role — offline service worker */
-const CACHE = "leadrole-v1";
-const ASSETS = ["/", "/index.html", "/manifest.webmanifest", "/icon.svg"];
+const CACHE = "leadrole-v2";
+const ASSETS = ["/", "/index.html", "/styles.css", "/data.js", "/app.js", "/manifest.webmanifest", "/icon.svg"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));
@@ -17,7 +17,6 @@ self.addEventListener("activate", (e) => {
 self.addEventListener("fetch", (e) => {
   const { request } = e;
   if (request.method !== "GET") return;
-  // network-first for navigations, cache-first for static assets
   if (request.mode === "navigate") {
     e.respondWith(
       fetch(request).then((res) => {
